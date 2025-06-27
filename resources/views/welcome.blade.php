@@ -113,7 +113,7 @@
                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-2 border border-gray-100">
                     <div class="relative">
                         <img class="w-full h-64 object-cover" src="{{ asset(explode(',', $person->images)[0]) }}" alt="Personne disparue">
-                        <span class="absolute top-4 right-4 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow">Disparu(e)</span>
+                        <span class="absolute top-4 right-4 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow">{{ $person->status == 'lost' ? 'Disparu(e)' : 'Retrouvé(e)' }} Disparu(e)</span>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center mb-3">
@@ -247,6 +247,81 @@
             <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm">
                 <div class="text-5xl font-bold mb-2">24/7</div>
                 <p class="text-blue-100">Disponibilité</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories Carousel -->
+<section class="py-20 bg-gradient-to-r from-green-600 to-green-500 text-white">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-1 bg-white/20 text-white rounded-full text-sm font-semibold mb-4">
+                Retrouvailles
+            </span>
+            <h2 class="text-4xl font-bold mb-4">Histoires de succès</h2>
+            <p class="text-xl text-green-100 max-w-2xl mx-auto">
+                Découvrez les objets et personnes qui ont été retrouvés grâce à notre communauté.
+            </p>
+        </div>
+
+        <div class="relative overflow-hidden">
+            <!-- Carousel Container -->
+            <div class="success-carousel flex transition-transform duration-500 ease-in-out">
+                @foreach($resolvedItems as $item)
+                <div class="carousel-item min-w-full md:min-w-1/2 lg:min-w-1/3 px-4">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 transform transition hover:scale-105">
+                        <div class="relative h-48 mb-4 rounded-xl overflow-hidden">
+                            <img src="{{ asset(explode(',', $item->images)[0]) }}" 
+                                 class="w-full h-full object-cover" 
+                                 alt="{{ $item->item_name }}">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <h3 class="font-bold text-lg">{{ $item->item_name }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm bg-white/20 px-3 py-1 rounded-full">
+                                {{ $item->category_name }}
+                            </span>
+                            <span class="text-sm">
+                                {{ $item->updated_at->diffForHumans(['locale' => 'fr']) }}
+                            </span>
+                        </div>
+                        <p class="text-green-100 mb-4">{{ Str::limit($item->description, 100) }}</p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mr-3">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-green-200">Retrouvé par</p>
+                                <p class="font-medium">{{ $item->foundBy->name ?? 'Anonyme' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Navigation Buttons -->
+            <button class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full w-12 h-12 flex items-center justify-center text-white z-10 ml-4">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full w-12 h-12 flex items-center justify-center text-white z-10 mr-4">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="flex justify-center mt-8">
+            <div class="flex space-x-2 carousel-dots">
+                @foreach($resolvedItems as $key => $item)
+                <button class="w-3 h-3 rounded-full bg-white/30 dot-button {{ $key === 0 ? 'bg-white/80' : '' }}" 
+                        data-index="{{ $key }}"></button>
+                @endforeach
             </div>
         </div>
     </div>
@@ -552,6 +627,89 @@
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('.success-carousel');
+    const items = document.querySelectorAll('.carousel-item');
+    const dots = document.querySelectorAll('.dot-button');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    
+    let currentIndex = 0;
+    const itemWidth = items[0].clientWidth;
+    const visibleItems = window.innerWidth < 768 ? 1 : (window.innerWidth < 1024 ? 2 : 3);
+    
+    function updateCarousel() {
+        const offset = -currentIndex * itemWidth * visibleItems;
+        carousel.style.transform = `translateX(${offset}px)`;
+        
+        // Update dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('bg-white/80', index === currentIndex);
+        });
+    }
+    
+    // Next button
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < items.length - visibleItems) {
+            currentIndex++;
+            updateCarousel();
+        }
+    });
+    
+    // Previous button
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+        }
+    });
+    
+    // Dot navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+        });
+    });
+    
+    // Auto-rotate (optional)
+    let interval = setInterval(() => {
+        if (currentIndex < items.length - visibleItems) {
+            currentIndex++;
+        } else {
+            currentIndex = 0;
+        }
+        updateCarousel();
+    }, 5000);
+    
+    // Pause on hover
+    carousel.addEventListener('mouseenter', () => {
+        clearInterval(interval);
+    });
+    
+    carousel.addEventListener('mouseleave', () => {
+        interval = setInterval(() => {
+            if (currentIndex < items.length - visibleItems) {
+                currentIndex++;
+            } else {
+                currentIndex = 0;
+            }
+            updateCarousel();
+        }, 5000);
+    });
+    
+    // Responsive adjustments
+    window.addEventListener('resize', () => {
+        const newVisibleItems = window.innerWidth < 768 ? 1 : (window.innerWidth < 1024 ? 2 : 3);
+        if (visibleItems !== newVisibleItems) {
+            visibleItems = newVisibleItems;
+            updateCarousel();
+        }
+    });
+});
+</script>
 
 <!-- Scripts -->
 <script src="https://cdn.cinetpay.com/seamless/main.js"></script>

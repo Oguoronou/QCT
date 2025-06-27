@@ -19,8 +19,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $items = Item::where("category_name","!=","personnes")->take(6)->get();
     $persons = Item::where("category_name","=","personnes")->take(6)->get();
+    $resolvedItems = $items->filter(function ($item) {
+        return $item->lost_found_status !== 'resolved';
+    });
 // dd($persons);
-    return view('welcome', ["items" => $items, "persons" => $persons]);
+    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems]);
 });
 
 Route::get('/login', function () {
@@ -46,7 +49,10 @@ Route::get("delete-item/{id}", [App\Http\Controllers\User\ItemController::class,
 Route::get("item-found/{id}", [App\Http\Controllers\User\ItemController::class, "itemFound"]);
 Route::get("item-deliver/{id}", [App\Http\Controllers\User\ItemController::class, "itemDeliver"]);
 Route::get('all-items', [App\Http\Controllers\User\ItemController::class, 'allItems'])->name('all-items');
-
+Route::post('/claim-item/{id}', [App\Http\Controllers\User\ItemController::class, 'claimItem'])->name('claim-item');
+Route::post('/validate-claim/{id}', [App\Http\Controllers\User\ItemController::class, 'validateClaim'])->name('validate-claim');
+Route::post('/claim-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'claimOwnership'])->name('claim-ownership');
+Route::post('/validate-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'validateOwnership'])->name('validate-ownership');
 Route::post("contact-us", [App\Http\Controllers\MessageController::class, "message"]);
 Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
 Route::get("admin/delete-message/{id}", [App\Http\Controllers\MessageController::class, "deleteMessage"]);

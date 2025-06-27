@@ -262,4 +262,148 @@ class ItemController extends Controller
             return redirect()->back();
         }
     }
+
+    // Dans ItemController.php
+
+public function claimItem(Request $request, $id)
+{
+    try {
+        $item = Item::findOrFail($id);
+        
+        // Vérifier que l'objet n'a pas déjà été trouvé
+        if ($item->lost_found_status != 'pending') {
+            Session::flash("error", "Cet objet a déjà été marqué comme trouvé.");
+            return redirect()->back();
+        }
+
+        // Mettre à jour l'objet
+        $item->update([
+            'found_user_id' => Auth::id(),
+            'lost_found_status' => 'claimed',
+        ]);
+
+        // Envoyer une notification au propriétaire (à implémenter)
+        // $item->user->notify(new ItemClaimedNotification($item, Auth::user()));
+
+        Session::flash("message", "Vous avez signalé avoir trouvé cet objet. Le propriétaire sera notifié.");
+        return redirect()->back();
+
+    } catch (\Exception $e) {
+        Session::flash("error", "Une erreur est survenue lors de la déclaration.");
+        return redirect()->back();
+    }
+}
+
+public function validateClaim(Request $request, $id)
+{
+    try {
+        $item = Item::findOrFail($id);
+        
+        // Vérifier que l'utilisateur est bien le propriétaire
+        if ($item->user_id != Auth::id()) {
+            Session::flash("error", "Vous n'êtes pas autorisé à valider cette réclamation.");
+            return redirect()->back();
+        }
+
+        // Vérifier que l'objet a bien été réclamé
+        if ($item->lost_found_status != 'claimed') {
+            Session::flash("error", "Cet objet n'a pas été réclamé.");
+            return redirect()->back();
+        }
+
+        // Mettre à jour l'objet
+        $item->update([
+            'lost_found_status' => 'delivered',
+        ]);
+
+        // Envoyer une notification au trouveur (à implémenter)
+        // $item->foundUser->notify(new ClaimValidatedNotification($item));
+
+        Session::flash("message", "Vous avez confirmé la récupération de votre objet. Merci !");
+        return redirect()->back();
+
+    } catch (\Exception $e) {
+        Session::flash("error", "Une erreur est survenue lors de la validation.");
+        return redirect()->back();
+    }
+}
+
+// Ajoutez ces méthodes dans ItemController.php
+
+public function claimOwnership(Request $request, $id)
+{
+    try {
+        $item = Item::findOrFail($id);
+        
+        // Vérifier que l'objet est bien marqué comme trouvé (found)
+        if ($item->status != 'found') {
+            Session::flash("error", "Cette action n'est possible que pour les objets trouvés.");
+            return redirect()->back();
+        }
+
+        // Vérifier que l'objet n'a pas déjà été réclamé
+        if ($item->lost_found_status != 'pending') {
+            Session::flash("error", "Cet objet a déjà été réclamé.");
+            return redirect()->back();
+        }
+
+        // Mettre à jour l'objet
+        $item->update([
+            'found_user_id' => Auth::id(),
+            'lost_found_status' => 'ownership_claimed',
+        ]);
+
+        // Envoyer une notification au posteur original
+        // $item->user->notify(new OwnershipClaimedNotification($item, Auth::user()));
+
+        $message = $item->category_name == 'personne' 
+            ? "Vous avez signalé qu'il s'agit de votre proche. Le posteur sera notifié." 
+            : "Vous avez signalé que cet objet vous appartient. Le posteur sera notifié.";
+
+        Session::flash("message", $message);
+        return redirect()->back();
+
+    } catch (\Exception $e) {
+        Session::flash("error", "Une erreur est survenue lors de la déclaration.");
+        return redirect()->back();
+    }
+}
+
+public function validateOwnership(Request $request, $id)
+{
+    try {
+        $item = Item::findOrFail($id);
+        
+        // Vérifier que l'utilisateur est bien celui qui a posté l'annonce
+        if ($item->user_id != Auth::id()) {
+            Session::flash("error", "Vous n'êtes pas autorisé à valider cette réclamation.");
+            return redirect()->back();
+        }
+
+        // Vérifier que l'objet a bien été réclamé
+        if ($item->lost_found_status != 'ownership_claimed') {
+            Session::flash("error", "Cet objet n'a pas été réclamé.");
+            return redirect()->back();
+        }
+
+        // Mettre à jour l'objet
+        $item->update([
+            'lost_found_status' => 'returned',
+        ]);
+
+        // Envoyer une notification au réclamant
+        // $item->foundUser->notify(new OwnershipValidatedNotification($item));
+
+        $message = $item->category_name == 'personne'
+            ? "Vous avez confirmé avoir retrouvé la personne avec son proche. Merci !"
+            : "Vous avez confirmé avoir rendu l'objet à son propriétaire. Merci !";
+
+        Session::flash("message", $message);
+        return redirect()->back();
+
+    } catch (\Exception $e) {
+        Session::flash("error", "Une erreur est survenue lors de la validation.");
+        return redirect()->back();
+    }
+}
 }

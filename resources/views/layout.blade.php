@@ -29,6 +29,32 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+        .success-carousel {
+        scroll-behavior: smooth;
+    }
+    
+    .carousel-item {
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+    
+    .carousel-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .success-carousel .carousel-item {
+        animation: fadeIn 0.6s ease forwards;
+    }
+    
+    .success-carousel .carousel-item:nth-child(1) { animation-delay: 0.1s; }
+    .success-carousel .carousel-item:nth-child(2) { animation-delay: 0.2s; }
+    .success-carousel .carousel-item:nth-child(3) { animation-delay: 0.3s; }
+    .success-carousel .carousel-item:nth-child(4) { animation-delay: 0.4s; }
+    .success-carousel .carousel-item:nth-child(5) { animation-delay: 0.5s; }
         .footer {
             background: linear-gradient(135deg, var(--dark-color), #1a237e);
             color: white;

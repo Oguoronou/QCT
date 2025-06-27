@@ -27,4 +27,10 @@ class Item extends Model
     {
         return $this->belongsTo("App\Models\User", "user_id", "id");
     }
+    // Dans app/Models/Item.php
+
+    public function foundUser()
+    {
+        return $this->belongsTo(User::class, 'found_user_id');
+    }
 }

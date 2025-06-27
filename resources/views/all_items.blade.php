@@ -72,27 +72,32 @@
             <!-- Liste des résultats -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
                 @forelse ($items as $item)
-                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition">
-                    <div class="relative">
-                        <img class="w-full h-48 object-cover" src="{{ asset('images/'.explode(',', $item->images)[0]) }}" alt="{{ $item->item_name }}">
-                        <span class="absolute top-3 right-3 bg-{{ $item->status == 'lost' ? 'red' : 'green' }}-500 text-white text-xs px-2 py-1 rounded-full">
-                            {{ $item->status == 'lost' ? 'Perdu' : 'Trouvé' }}
-                        </span>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-1 text-gray-800">{{ $item->item_name }}</h3>
-                        <p class="text-gray-600 text-sm mb-3">{{ Str::limit($item->description, 60) }}</p>
-                        <div class="flex items-center justify-between">
-                            <a href="{{ url('item-detail', $item->id) }}" class="text-blue-600 hover:text-blue-800 font-medium flex items-center">
-                                Voir détails
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </a>
-                            <span class="text-xs text-gray-500">{{ $item->created_at->diffForHumans(['locale' => 'fr']) }}</span>
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-2 border border-gray-100">
+                <div class="relative">
+                    <img class="w-full h-64 object-cover" src="{{ asset(explode(',', $item->images)[0]) }}" alt="Objet perdu/trouvé">
+                    <span class="absolute top-4 right-4 {{ $item->status == 'lost' ? 'bg-red-500' : 'bg-green-500' }} text-white text-xs px-3 py-1 rounded-full shadow">
+                        {{ $item->status == 'lost' ? 'Perdu' : 'Trouvé' }}
+                    </span>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                            <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'plug' : 'box') }} text-blue-500"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-xl">{{ $item->item_name }}</h5>
+                            <p class="text-sm text-gray-500">{{ ucfirst($item->category) }}</p>
                         </div>
                     </div>
+                    <p class="text-gray-600 mb-4">{{ Str::limit($item->description, 100) }}</p>
+                    <div class="flex items-center justify-between">
+                        <a href="{{ url('item-detail', $item->id) }}" class="text-white bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium transition flex items-center">
+                            <i class="fas fa-eye mr-2"></i> Voir
+                        </a>
+                        <span class="text-gray-400 text-sm">{{ $item->created_at->diffForHumans(['locale' => 'fr']) }}</span>
+                    </div>
                 </div>
+            </div>
                 @empty
                 <div class="col-span-full py-12 text-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
