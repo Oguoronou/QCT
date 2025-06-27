@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    $items = Item::where("category_name","!=","personne")->take(6)->get();
-    $persons = Item::where("category_name","=","personne")->take(6)->get();
+    $items = Item::where("category_name","!=","personnes")->take(6)->get();
+    $persons = Item::where("category_name","=","personnes")->take(6)->get();
 // dd($persons);
     return view('welcome', ["items" => $items, "persons" => $persons]);
 });

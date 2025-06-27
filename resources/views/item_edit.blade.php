@@ -38,9 +38,16 @@
                             <label class="block text-gray-700 font-medium mb-2">Catégorie *</label>
                             <select name="category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                                 <option value="" disabled selected>Sélectionnez une catégorie</option>
-                                <option value="Mobile" {{ $item->category_name == 'Mobile' ? 'selected' : '' }}>Mobile</option>
-                                <option value="Vélo" {{ $item->category_name == 'Vélo' ? 'selected' : '' }}>Vélo</option>
-                                <option value="Voiture" {{ $item->category_name == 'Voiture' ? 'selected' : '' }}>Voiture</option>
+
+                                {{-- <option value="Mobile" {{ $item->category_name == 'Mobile' ? 'selected' : '' }}>Mobile</option> --}}
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_name }}" {{ $item->category_name == $category->category_name ? 'selected' : '' }}>
+                                        {{ $category->category_name }}
+                                    </option>
+
+                                @endforeach
+                                {{-- <option value="Vélo" {{ $item->category_name == 'Vélo' ? 'selected' : '' }}>Vélo</option>
+                                <option value="Voiture" {{ $item->category_name == 'Voiture' ? 'selected' : '' }}>Voiture</option> --}}
                                 <!-- Ajoutez d'autres options au besoin -->
                             </select>
                         </div>
@@ -51,22 +58,24 @@
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Date de perte *</label>
                             <input type="date" name="lost_date" 
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
-                                   value="{{ $item->date }}" required>
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+                                value="{{ $item->date }}" required>
                         </div>
                         
                         <div>
-                            <label class="block text-gray-700 font-medium mb-2">Image</label>
-                            <div class="flex items-center space-x-4">
-                                <!-- Aperçu de l'image actuelle -->
+                            <label class="block text-gray-700 font-medium mb-2">Images</label>
+                            <div class="flex flex-wrap gap-4">
+                                <!-- Aperçu des images actuelles -->
                                 @if($item->images)
-                                <div class="relative">
-                                    <img src="{{ asset(explode(',', $item->images)[0]) }}" 
-                                         class="w-16 h-16 object-cover rounded-lg border border-gray-300">
-                                    <span class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                                        Actuel
-                                    </span>
-                                </div>
+                                    @foreach(explode(',', $item->images) as $image)
+                                    <div class="relative">
+                                        <img src="{{ asset($image) }}" 
+                                            class="w-16 h-16 object-cover rounded-lg border border-gray-300">
+                                        <span class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+                                            {{ $loop->iteration }}
+                                        </span>
+                                    </div>
+                                    @endforeach
                                 @endif
                                 
                                 <!-- Champ de téléchargement -->
@@ -82,9 +91,10 @@
                                                 </p>
                                                 <p class="text-xs text-gray-500">PNG, JPG (MAX. 2MB)</p>
                                             </div>
-                                            <input type="file" name="image" class="hidden">
+                                            <input type="file" name="images[]" class="hidden" multiple>
                                         </label>
                                     </div>
+                                    <p class="text-xs text-gray-500 mt-1">Laissez vide pour conserver les images actuelles</p>
                                 </div>
                             </div>
                         </div>

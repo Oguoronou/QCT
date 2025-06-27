@@ -37,7 +37,7 @@
                             <label class="block text-gray-700 font-medium mb-2">Catégorie *</label>
                             <select name="category" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
                                 @foreach ($categories as $key=>$categorie)
-                                <option value="{{ $categorie->category_name }}">{{ $categorie->category_name }}</option>
+                                    <option value="{{ $categorie->category_name }}">{{ $categorie->category_name }}</option>
                                 @endforeach
                             </select>
                         </div>
