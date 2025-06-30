@@ -113,7 +113,7 @@
                 <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-2 border border-gray-100">
                     <div class="relative">
                         <img class="w-full h-64 object-cover" src="{{ asset(explode(',', $person->images)[0]) }}" alt="Personne disparue">
-                        <span class="absolute top-4 right-4 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow">{{ $person->status == 'lost' ? 'Disparu(e)' : 'Retrouvé(e)' }} Disparu(e)</span>
+                        <span class="absolute top-4 right-4 {{ $person->status == 'lost' ? 'bg-red-500' : 'bg-green-500' }}  text-white text-xs px-3 py-1 rounded-full shadow">{{ $person->status == 'lost' ? 'Disparu(e)' : 'Retrouvé(e)' }}</span>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center mb-3">

@@ -67,7 +67,7 @@
                                         </svg>
                                         <p class="text-sm text-gray-500">Cliquez pour uploader</p>
                                     </div>
-                                    <input type="file" name="image" class="hidden" accept="image/*" required>
+                                    <input type="file" name="images[]" class="hidden" accept="image/*" required>
                                 </label>
                             </div>
                         </div>

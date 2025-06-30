@@ -29,41 +29,29 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
-        .success-carousel {
-        scroll-behavior: smooth;
-    }
-    
-    .carousel-item {
-        transition: transform 0.5s ease, opacity 0.5s ease;
-    }
-    
-    .carousel-item:hover {
-        transform: translateY(-5px);
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .success-carousel .carousel-item {
-        animation: fadeIn 0.6s ease forwards;
-    }
-    
-    .success-carousel .carousel-item:nth-child(1) { animation-delay: 0.1s; }
-    .success-carousel .carousel-item:nth-child(2) { animation-delay: 0.2s; }
-    .success-carousel .carousel-item:nth-child(3) { animation-delay: 0.3s; }
-    .success-carousel .carousel-item:nth-child(4) { animation-delay: 0.4s; }
-    .success-carousel .carousel-item:nth-child(5) { animation-delay: 0.5s; }
-        .footer {
-            background: linear-gradient(135deg, var(--dark-color), #1a237e);
-            color: white;
-            padding: 60px 0 30px;
-            margin-top: auto;
-        }   
+        
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .mobile-menu.open {
+            max-height: 500px; /* Ajustez selon le contenu */
+        }
+        
+        .account-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .account-menu.open {
+            max-height: 300px;
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen bg-gray-50">
+<body class="flex flex-col min-h-screen bg-gray-50" x-data="{ mobileMenuOpen: false, accountMenuOpen: false }">
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white shadow-sm">
         <div class="container mx-auto px-4">
@@ -75,9 +63,10 @@
                 
                 <!-- Mobile menu button -->
                 <button class="md:hidden rounded-md p-2 text-gray-700 hover:bg-gray-100 focus:outline-none" 
-                        @click="open = !open">
+                        @click="mobileMenuOpen = !mobileMenuOpen">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
                 
@@ -88,15 +77,15 @@
                             Accueil
                         </a>
                         
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 flex items-center">
+                        <div class="relative" x-data="{ accountMenuOpen: false }">
+                            <button @click="accountMenuOpen = !accountMenuOpen" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 flex items-center">
                                 <i class="fas fa-user-circle mr-1"></i> Mon compte
                                 <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
                             
-                            <div x-show="open" @click.away="open = false" 
+                            <div x-show="accountMenuOpen" @click.away="accountMenuOpen = false" 
                                  class="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                                 <div class="py-1">
                                     <a href="{{ url('my-items') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -134,21 +123,21 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div class="md:hidden" x-show="open" @click.away="open = false">
+        <div class="md:hidden mobile-menu" :class="{ 'open': mobileMenuOpen }" x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="{{ url('/') }}" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('/') ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-gray-100' }}">
                     Accueil
                 </a>
                 
                 <div class="relative">
-                    <button class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 flex items-center justify-between">
+                    <button @click="accountMenuOpen = !accountMenuOpen" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 flex items-center justify-between">
                         <span><i class="fas fa-user-circle mr-1"></i> Mon compte</span>
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
                     
-                    <div class="pl-4">
+                    <div class="account-menu pl-4" :class="{ 'open': accountMenuOpen }">
                         <a href="{{ url('my-items') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-box mr-2"></i> Mes objets
                         </a>
@@ -178,12 +167,13 @@
         </div>
     </nav>
 
+    <!-- Le reste de votre code reste inchangé -->
     <!-- Contenu principal -->
     <main class="flex-grow">
         @yield('content')
     </main>
 
-    <!-- Footer -->
+       <!-- Footer -->
     <footer class="bg-gradient-to-r from-dark to-blue-900 text-white mt-auto">
         <div class="container mx-auto px-4 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">

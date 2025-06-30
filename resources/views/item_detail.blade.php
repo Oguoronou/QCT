@@ -164,7 +164,7 @@
                                 <button type="submit" 
                                         class="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition flex items-center">
                                     <i class="fas fa-hand-holding-heart mr-2"></i>
-                                    @if($item->category_name == 'personnes')
+                                    @if($item->category_name == 'Personnes')
                                         C'est mon proche
                                     @else
                                         Cet objet m'appartient
@@ -180,7 +180,7 @@
                                 <button type="submit" 
                                         class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center">
                                     <i class="fas fa-check-circle mr-2"></i>
-                                    @if($item->category_name == 'personnes')
+                                    @if($item->category_name == 'Personnes')
                                         J'ai retrouvé cette personne
                                     @else
                                         J'ai trouvé cet objet
@@ -196,7 +196,7 @@
                                 <button type="submit" 
                                         class="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition flex items-center">
                                     <i class="fas fa-thumbs-up mr-2"></i>
-                                    @if($item->category_name == 'personnes')
+                                    @if($item->category_name == 'Personnes')
                                         Confirmer les retrouvailles
                                     @else
                                         Confirmer la restitution
@@ -212,7 +212,7 @@
                                 <button type="submit" 
                                         class="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition flex items-center">
                                     <i class="fas fa-thumbs-up mr-2"></i>
-                                    @if($item->category_name == 'personnes')
+                                    @if($item->category_name == 'Personnes')
                                         Confirmer les retrouvailles
                                     @else
                                         Confirmer la récupération
@@ -225,7 +225,7 @@
                         @if($item->lost_found_status == 'ownership_claimed')
                             <div class="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg">
                                 <i class="fas fa-info-circle mr-2"></i>
-                                @if($item->category_name == 'personnes')
+                                @if($item->category_name == 'Personnes')
                                     Un proche a signalé avoir retrouvé la personne. En attente de confirmation.
                                 @else
                                     Un propriétaire a signalé que cet objet lui appartient. En attente de confirmation.
@@ -236,7 +236,7 @@
                         @if($item->lost_found_status == 'returned' || $item->lost_found_status == 'delivered')
                             <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
                                 <i class="fas fa-check-circle mr-2"></i>
-                                @if($item->category_name == 'personnes')
+                                @if($item->category_name == 'Personnes')
                                     La personne a été rendue à son proche.
                                 @else
                                     L'objet a été rendu à son propriétaire.
@@ -244,18 +244,18 @@
                             </div>
                         @endif
 
-                        <!-- Afficher les infos du trouveur/propriétaire -->
+
                         @if(($item->lost_found_status == 'claimed' || $item->lost_found_status == 'ownership_claimed' || $item->lost_found_status == 'returned' || $item->lost_found_status == 'delivered') && $item->found_user_id)
                             <div class="mt-4 border-t pt-4">
                                 <h4 class="font-medium text-gray-700 mb-2">
                                     @if($item->status == 'found')
-                                        @if($item->category_name == 'personnes')
+                                        @if($item->category_name == 'Personnes')
                                             Proche ayant reconnu la personne:
                                         @else
                                             Propriétaire ayant reconnu l'objet:
                                         @endif
                                     @else
-                                        @if($item->category_name == 'personnes')
+                                        @if($item->category_name == 'Personnes')
                                             Personne ayant retrouvé:
                                         @else
                                             Personne ayant trouvé:
