@@ -67,8 +67,14 @@
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Type:</div>
                                 <div class="col-span-3">
+                                    @php
+                                        $typeText = [
+                                            'lost' => 'Perdu',
+                                            'found' => 'Trouvé'
+                                        ][$item->status] ?? $item->status;
+                                    @endphp
                                     <span class="px-2 py-1 rounded-full text-xs font-medium {{ $item->status == 'lost' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
-                                        {{ $item->status ?? "pending" }}
+                                        {{ $typeText }}
                                     </span>
                                 </div>
                             </div>
@@ -76,15 +82,34 @@
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Statut:</div>
                                 <div class="col-span-3">
-                                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $item->lost_found_status == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-purple-100 text-purple-800' }}">
-                                        {{ $item->lost_found_status ?? "pending" }}
+                                    @php
+                                        $statusText = [
+                                            'pending' => 'En attente',
+                                            'claimed' => 'Réclamation en cours',
+                                            'ownership_claimed' => 'Propriété revendiquée',
+                                            'delivered' => 'Rendu au propriétaire',
+                                            'returned' => 'Restitué',
+                                            'found' => 'Trouvé'
+                                        ][$item->lost_found_status] ?? $item->lost_found_status;
+                                        
+                                        $statusColor = [
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'claimed' => 'bg-blue-100 text-blue-800',
+                                            'ownership_claimed' => 'bg-purple-100 text-purple-800',
+                                            'delivered' => 'bg-green-100 text-green-800',
+                                            'returned' => 'bg-green-100 text-green-800',
+                                            'found' => 'bg-green-100 text-green-800'
+                                        ][$item->lost_found_status] ?? 'bg-gray-100 text-gray-800';
+                                    @endphp
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $statusColor }}">
+                                        {{ $statusText }}
                                     </span>
                                 </div>
                             </div>
                             
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Date:</div>
-                                <div class="col-span-3">{{ $item->date ?? "buy" }}</div>
+                                <div class="col-span-3">{{ $item->date ?? "Non spécifiée" }}</div>
                             </div>
                         </div>
                     </div>
@@ -96,32 +121,32 @@
                         <div class="space-y-4">
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Nom:</div>
-                                <div class="col-span-3">{{ $item->users->name ?? "" }}</div>
+                                <div class="col-span-3">{{ $item->users->name ?? "Non renseigné" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Email:</div>
-                                <div class="col-span-3">{{ $item->users->email ?? "" }}</div>
+                                <div class="col-span-3">{{ $item->users->email ?? "Non renseigné" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Contact:</div>
-                                <div class="col-span-3">{{ $item->users->mobile_no ?? "" }}</div>
+                                <div class="col-span-3">{{ $item->users->mobile_no ?? "Non renseigné" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Pays:</div>
-                                <div class="col-span-3">{{ $item->users->country ?? "" }}</div>
+                                <div class="col-span-3">{{ $item->users->country ?? "Non renseigné" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Ville:</div>
-                                <div class="col-span-3">{{ $item->users->city ?? "" }}</div>
+                                <div class="col-span-3">{{ $item->users->city ?? "Non renseigné" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-4 gap-4">
                                 <div class="col-span-1 font-medium text-gray-700">Adresse:</div>
-                                <div class="col-span-3">{{ $item->users->address ?? "" }}</div>
+                                <div class="col-span-3">{{ $item->users->address ?? "Non renseigné" }}</div>
                             </div>
                         </div>
                     </div>
@@ -131,7 +156,7 @@
                 <div class="mt-8">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Description</h3>
                     <div class="bg-gray-50 p-4 rounded-lg">
-                        <p class="text-gray-700">{{ $item->description }}</p>
+                        <p class="text-gray-700">{{ $item->description ?? "Aucune description fournie" }}</p>
                     </div>
                 </div>
 
@@ -140,19 +165,26 @@
                     <h3 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Images</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         @php
-                            $images = explode(',', $item->images);
+                            $images = $item->images ? explode(',', $item->images) : [];
                         @endphp
-                        @foreach($images as $image)
-                            <div class="overflow-hidden rounded-lg border border-gray-200">
-                                <img src="{{ asset($image) }}" 
-                                     class="w-full h-48 object-cover hover:scale-105 transition duration-300" 
-                                     alt="Image de l'objet">
+                        @if(count($images) > 0)
+                            @foreach($images as $image)
+                                <div class="overflow-hidden rounded-lg border border-gray-200">
+                                    <img src="{{ asset($image) }}" 
+                                         class="w-full h-48 object-cover hover:scale-105 transition duration-300" 
+                                         alt="Image de l'objet">
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="col-span-3 text-center py-8 text-gray-500">
+                                <i class="fas fa-image fa-2x mb-2"></i>
+                                <p>Aucune image disponible</p>
                             </div>
-                        @endforeach
+                        @endif
                     </div>
                 </div>
-                <!-- Ajoutez cette section après la section "Images" -->
-                <!-- Ajoutez/modifiez cette section après la section "Images" -->
+
+                <!-- Actions -->
                 <div class="mt-8">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Actions</h3>
                     
@@ -243,7 +275,6 @@
                                 @endif
                             </div>
                         @endif
-
 
                         @if(($item->lost_found_status == 'claimed' || $item->lost_found_status == 'ownership_claimed' || $item->lost_found_status == 'returned' || $item->lost_found_status == 'delivered') && $item->found_user_id)
                             <div class="mt-4 border-t pt-4">
