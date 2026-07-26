@@ -41,7 +41,7 @@
                     <tr class="hover:bg-gray-50 transition-colors duration-150">
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $item->users->name ?? "N/A" }}</div>
+                            <div class="text-sm font-medium text-gray-900">{{ $item->user->name ?? "N/A" }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm text-gray-900">{{ $item->item_name ?? "N/A" }}</div>

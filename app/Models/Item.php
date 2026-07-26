@@ -40,14 +40,6 @@ class Item extends Model
     }
 
     /**
-     * Relation avec le propriétaire (legacy name)
-     */
-    public function users()
-    {
-        return $this->belongsTo(User::class, "user_id", "id");
-    }
-
-    /**
      * Relation avec l'utilisateur qui a trouvé l'objet
      */
     public function foundUser()

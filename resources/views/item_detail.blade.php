@@ -101,46 +101,46 @@
                             Détails de l'utilisateur
                         </h3>
                         
-                        @if($item->users)
+                        @if($item->user)
                         <div class="space-y-4">
                             <div class="flex items-center gap-4 mb-6 p-4 bg-slate-900 rounded-xl border border-slate-700">
                                 <div class="w-14 h-14 rounded-full bg-blue-500/15 border border-blue-500/25 flex items-center justify-center text-blue-500 font-bold text-lg shrink-0">
-                                    {{ strtoupper(substr($item->users->name, 0, 1)) }}
+                                    {{ strtoupper(substr($item->user->name, 0, 1)) }}
                                 </div>
                                 <div>
-                                    <p class="font-semibold text-slate-50">{{ $item->users->name }}</p>
-                                    <p class="text-sm text-slate-400">{{ $item->users->email }}</p>
+                                    <p class="font-semibold text-slate-50">{{ $item->user->name }}</p>
+                                    <p class="text-sm text-slate-400">{{ $item->user->email }}</p>
                                 </div>
                             </div>
                             
                             <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
                                 <span class="text-sm text-slate-400">Nom</span>
-                                <span class="text-sm text-slate-50">{{ $item->users->name }}</span>
+                                <span class="text-sm text-slate-50">{{ $item->user->name }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
                                 <span class="text-sm text-slate-400">Email</span>
-                                <span class="text-sm text-slate-50">{{ $item->users->email }}</span>
+                                <span class="text-sm text-slate-50">{{ $item->user->email }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
                                 <span class="text-sm text-slate-400">Contact</span>
-                                <span class="text-sm text-slate-50">{{ $item->users->mobile_no ?? 'Non renseigné' }}</span>
+                                <span class="text-sm text-slate-50">{{ $item->user->mobile_no ?? 'Non renseigné' }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
                                 <span class="text-sm text-slate-400">Pays</span>
-                                <span class="text-sm text-slate-50">{{ $item->users->country ?? 'Non renseigné' }}</span>
+                                <span class="text-sm text-slate-50">{{ $item->user->country ?? 'Non renseigné' }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
                                 <span class="text-sm text-slate-400">Ville</span>
-                                <span class="text-sm text-slate-50">{{ $item->users->city ?? 'Non renseigné' }}</span>
+                                <span class="text-sm text-slate-50">{{ $item->user->city ?? 'Non renseigné' }}</span>
                             </div>
                             
                             <div class="flex items-center justify-between py-2">
                                 <span class="text-sm text-slate-400">Adresse</span>
-                                <span class="text-sm text-slate-50">{{ $item->users->address ?? 'Non renseigné' }}</span>
+                                <span class="text-sm text-slate-50">{{ $item->user->address ?? 'Non renseigné' }}</span>
                             </div>
                         </div>
                         @else

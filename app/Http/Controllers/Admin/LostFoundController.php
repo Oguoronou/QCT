@@ -23,7 +23,7 @@ class LostFoundController extends Controller
 
     public function itemDetail($id)
     {
-        $item = Item::where("id", $id)->with("users")->first();
+        $item = Item::where("id", $id)->with("user")->first();
 
         return view('Admin.LostFound.detail', ["item" => $item]);
     }

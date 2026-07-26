@@ -128,32 +128,32 @@
                         <div class="space-y-4">
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-sm font-medium text-gray-500">Nom:</div>
-                                <div class="col-span-2 text-sm text-gray-800">{{ $item->users->name ?? "" }}</div>
+                                <div class="col-span-2 text-sm text-gray-800">{{ $item->user->name ?? "" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-sm font-medium text-gray-500">Email:</div>
-                                <div class="col-span-2 text-sm text-gray-800">{{ $item->users->email ?? "" }}</div>
+                                <div class="col-span-2 text-sm text-gray-800">{{ $item->user->email ?? "" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-sm font-medium text-gray-500">Téléphone:</div>
-                                <div class="col-span-2 text-sm text-gray-800">{{ $item->users->mobile_no ?? "" }}</div>
+                                <div class="col-span-2 text-sm text-gray-800">{{ $item->user->mobile_no ?? "" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-sm font-medium text-gray-500">Pays:</div>
-                                <div class="col-span-2 text-sm text-gray-800">{{ $item->users->country ?? "" }}</div>
+                                <div class="col-span-2 text-sm text-gray-800">{{ $item->user->country ?? "" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-sm font-medium text-gray-500">Ville:</div>
-                                <div class="col-span-2 text-sm text-gray-800">{{ $item->users->city ?? "" }}</div>
+                                <div class="col-span-2 text-sm text-gray-800">{{ $item->user->city ?? "" }}</div>
                             </div>
                             
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-sm font-medium text-gray-500">Adresse:</div>
-                                <div class="col-span-2 text-sm text-gray-800">{{ $item->users->address ?? "" }}</div>
+                                <div class="col-span-2 text-sm text-gray-800">{{ $item->user->address ?? "" }}</div>
                             </div>
                         </div>
                     </div>
