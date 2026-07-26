@@ -47,7 +47,7 @@ Route::get('/login', function () {
 Route::get("register", [App\Http\Controllers\User\RegisterController::class, "create"])->name('register');
 Route::post("register", [App\Http\Controllers\User\RegisterController::class, "register"])->middleware('throttle.custom:10,1');
 Route::post("login", [App\Http\Controllers\User\RegisterController::class, "login"])->middleware('throttle.custom:10,1');
-Route::get("logout", [App\Http\Controllers\User\RegisterController::class, "logout"])->name('logout');
+Route::match(['get', 'post'], "logout", [App\Http\Controllers\User\RegisterController::class, "logout"])->name('logout');
 
 Route::get("my-account", [App\Http\Controllers\User\ProfileController::class, "myAccount"]);
 Route::post("update-profile", [App\Http\Controllers\User\ProfileController::class, "updateProfile"]);
