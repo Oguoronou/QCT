@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\ItemClaimedNotification;
 use App\Notifications\OwnershipClaimedNotification;
+use App\Notifications\ClaimValidatedNotification;
 
 class ItemController extends Controller
 {
@@ -378,7 +379,7 @@ class ItemController extends Controller
 
             // Envoyer une notification au trouveur
             if ($item->foundUser) {
-                $item->foundUser->notify(new \Illuminate\Notifications\Messages\MailMessage);
+                $item->foundUser->notify(new ClaimValidatedNotification($item, Auth::user()));
             }
 
             Session::flash("message", "Vous avez confirmé la récupération de votre objet. Merci !");
