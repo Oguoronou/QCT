@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use App\Notifications\ItemClaimedNotification;
 use App\Notifications\OwnershipClaimedNotification;
 use App\Notifications\ClaimValidatedNotification;
+use App\Notifications\OwnershipValidatedNotification;
 
 class ItemController extends Controller
 {
@@ -453,7 +454,9 @@ class ItemController extends Controller
             ]);
 
             // Envoyer une notification au réclamant
-            // $item->foundUser->notify(new OwnershipValidatedNotification($item));
+            if ($item->foundUser) {
+                $item->foundUser->notify(new OwnershipValidatedNotification($item, Auth::user()));
+            }
 
             $message = $item->category_name == 'Personnes'
                 ? "Vous avez confirmé avoir retrouvé la personne avec son proche. Merci !"
