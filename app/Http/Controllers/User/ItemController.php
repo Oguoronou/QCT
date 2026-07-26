@@ -346,7 +346,9 @@ class ItemController extends Controller
             ]);
 
             // Envoyer une notification au propriétaire
-            $item->user->notify(new ItemClaimedNotification($item, Auth::user()));
+            if ($item->user) {
+                $item->user->notify(new ItemClaimedNotification($item, Auth::user()));
+            }
 
             Session::flash("message", "Vous avez signalé avoir trouvé cet objet. Le propriétaire sera notifié.");
             return redirect()->back();
@@ -417,7 +419,9 @@ class ItemController extends Controller
             ]);
 
             // Envoyer une notification au posteur original
-            $item->user->notify(new OwnershipClaimedNotification($item, Auth::user()));
+            if ($item->user) {
+                $item->user->notify(new OwnershipClaimedNotification($item, Auth::user()));
+            }
 
             $message = $item->category_name == 'Personnes'
                 ? "Vous avez signalé qu'il s'agit de votre proche. Le posteur sera notifié."
