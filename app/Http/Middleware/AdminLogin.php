@@ -36,11 +36,11 @@ class AdminLogin
         //     Item::truncate();
         // }
 
-        if(!empty(auth()->user()) && auth()->user()->role == "admin"){
-            Session::flash("message", "Your are Login as User! not able to access Admin Dashboard");
-            return $next($request);
+        if(empty(auth()->user()) || auth()->user()->role != "admin"){
+            Session::flash("error", "Vous n'êtes pas autorisé à accéder à cette zone.");
+            return redirect("my-account");
         }
 
-        return redirect("my-account");
+        return $next($request);
     }
 }

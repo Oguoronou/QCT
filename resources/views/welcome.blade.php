@@ -1,782 +1,659 @@
 @extends('layout')
-@section("content")
 
-<!-- Hero Section - Version améliorée -->
-<div class="relative w-full h-screen max-h-[700px] overflow-hidden">
+@section('content')
+
+{{-- ════════════════════════════════════════
+    HERO — Barre de recherche centrale
+════════════════════════════════════════ --}}
+<section class="relative min-h-screen flex items-center overflow-hidden">
     <div class="absolute inset-0 z-0">
-        <img src="{{ asset('3.png') }}" alt="Hero" class="object-cover w-full h-full opacity-70">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-blue-600/80"></div>
+        <img src="{{ asset('3.png') }}" alt="" aria-hidden="true" class="w-full h-full object-cover opacity-30 grayscale-[40%]">
+        <div class="absolute inset-0 bg-gradient-to-br from-[rgba(15,23,42,.97)] via-[rgba(15,23,42,.8)] to-[rgba(30,41,59,.7)]"></div>
     </div>
-    <div class="relative z-10 container mx-auto px-6 h-full flex items-center">
-        <div class="max-w-2xl text-center mx-auto">
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-xl">
-                Retrouvez ce qui compte vraiment
-            </h1>
-            <p class="text-xl text-blue-100 mb-8 max-w-lg mx-auto">
-                QCT connecte les objets perdus avec leurs propriétaires et aide à retrouver les personnes disparues.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ url('add-item') }}" 
-                   class="px-8 py-4 bg-white text-blue-700 font-bold rounded-xl shadow-lg hover:bg-blue-100 transition transform hover:-translate-y-1">
-                   <i class="fas fa-search mr-2"></i> J'ai perdu quelque chose
+
+    <div class="relative z-10 container mx-auto px-6 py-20 flex flex-col gap-6 max-w-[820px]">
+        <div class="flex">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/25">
+                <i class="fas fa-circle text-[7px]"></i>
+                {{ $persons->where('status','lost')->count() }} personnes disparues actives
+            </span>
+        </div>
+
+        <h1 class="text-[clamp(36px,6vw,72px)] font-black leading-[1.05] tracking-[-2px] text-slate-50">
+            Retrouvez ce qui<br>
+            <span class="text-blue-500 relative">compte vraiment</span>
+        </h1>
+
+        <p class="text-[clamp(15px,2vw,18px)] text-slate-400 max-w-[540px] leading-relaxed">
+            Signalez, cherchez, retrouvez — objets perdus et personnes disparues en Côte d'Ivoire.
+        </p>
+
+        <!-- Barre de recherche principale -->
+        <div class="flex flex-col gap-3.5 max-w-[700px]">
+            <div class="flex items-center bg-slate-800 border border-slate-700 rounded-full overflow-hidden transition-colors focus-within:border-blue-500 focus-within:shadow-[0_0_0_4px_rgba(59,130,246,.15)]">
+                <i class="fas fa-search px-4 text-slate-400 text-sm shrink-0"></i>
+                <input type="text" id="heroSearch"
+                       placeholder="Que cherchez-vous ? Portefeuille, téléphone, personne…"
+                       onkeydown="if(event.key==='Enter') window.location='/all-items?q='+encodeURIComponent(this.value)"
+                       class="flex-1 bg-transparent border-none outline-none text-slate-50 text-[15px] font-sans py-4 px-0 placeholder:text-slate-400">
+                <button onclick="window.location='/all-items?q='+encodeURIComponent(document.getElementById('heroSearch').value)"
+                        class="bg-blue-500 text-white border-none py-3.5 px-7 font-bold text-sm cursor-pointer font-sans transition-colors hover:bg-blue-600 whitespace-nowrap">
+                    Rechercher
+                </button>
+            </div>
+
+            <!-- Catégories rapides -->
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ url('/all-items?category=documents') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                    <i class="fas fa-id-card"></i> Documents
                 </a>
-                <a href="{{ url('add-found-item') }}" 
-                   class="px-8 py-4 bg-green-500 text-white font-bold rounded-xl shadow-lg hover:bg-green-600 transition transform hover:-translate-y-1">
-                   <i class="fas fa-hands-helping mr-2"></i> J'ai trouvé un objet
+                <a href="{{ url('/all-items?category=electronics') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                    <i class="fas fa-mobile-alt"></i> Téléphones
+                </a>
+                <a href="{{ url('/all-items?category=keys') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                    <i class="fas fa-key"></i> Clés
+                </a>
+                <a href="{{ url('/all-items?category=wallet') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                    <i class="fas fa-wallet"></i> Portefeuilles
+                </a>
+                <a href="{{ url('/all-items?category=animal') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                    <i class="fas fa-paw"></i> Animaux
+                </a>
+                <a href="{{ url('/all-items?category=Personnes') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-amber-400 border border-amber-500/30 bg-amber-500/8 no-underline transition-all hover:border-amber-500 hover:bg-amber-500/15">
+                    <i class="fas fa-user-slash"></i> Disparus
                 </a>
             </div>
         </div>
+
+        <!-- CTAs secondaires -->
+        <div class="flex gap-3 flex-wrap">
+            <a href="{{ url('add-item') }}" class="inline-flex items-center gap-2 px-7 py-3 rounded-full text-[15px] font-semibold cursor-pointer transition-all no-underline border bg-transparent text-slate-50 border-slate-700 hover:bg-slate-800">
+                <i class="fas fa-exclamation-triangle"></i> J'ai perdu quelque chose
+            </a>
+            <a href="{{ url('add-found-item') }}" class="inline-flex items-center gap-2 px-7 py-3 rounded-full text-[15px] font-semibold cursor-pointer transition-all no-underline border-none bg-emerald-500 text-white hover:bg-emerald-600">
+                <i class="fas fa-hands-helping"></i> J'ai trouvé un objet
+            </a>
+        </div>
     </div>
-    <div class="absolute bottom-10 left-0 right-0 flex justify-center z-10">
-        <a href="#how-it-works" class="animate-bounce">
-            <div class="w-10 h-10 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center">
-                <i class="fas fa-chevron-down text-white"></i>
-            </div>
-        </a>
+
+    <a href="#recent" class="absolute bottom-8 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-slate-400 no-underline animate-bounce z-10">
+        <i class="fas fa-chevron-down"></i>
+    </a>
+</section>
+
+{{-- ════════════════════════════════════════
+    STATS BAR
+════════════════════════════════════════ --}}
+<div class="bg-slate-800 border-y border-slate-700 py-5 px-6">
+    <div class="container mx-auto px-6 flex items-center justify-center flex-wrap gap-6">
+        <div class="flex flex-col items-center">
+            <span class="text-[22px] font-extrabold text-blue-500 tracking-[-0.5px]">142K+</span>
+            <span class="text-xs text-slate-400 mt-0.5">Retrouvailles</span>
+        </div>
+        <div class="w-px h-9 bg-slate-700 max-sm:hidden"></div>
+        <div class="flex flex-col items-center">
+            <span class="text-[22px] font-extrabold text-blue-500 tracking-[-0.5px]">75K+</span>
+            <span class="text-xs text-slate-400 mt-0.5">Objets rendus</span>
+        </div>
+        <div class="w-px h-9 bg-slate-700 max-sm:hidden"></div>
+        <div class="flex flex-col items-center">
+            <span class="text-[22px] font-extrabold text-blue-500 tracking-[-0.5px]">1.2M+</span>
+            <span class="text-xs text-slate-400 mt-0.5">Membres</span>
+        </div>
+        <div class="w-px h-9 bg-slate-700 max-sm:hidden"></div>
+        <div class="flex flex-col items-center">
+            <span class="text-[22px] font-extrabold text-emerald-500 tracking-[-0.5px]">{{ $resolvedItems->count() }}</span>
+            <span class="text-xs text-slate-400 mt-0.5">Résolus ce mois</span>
+        </div>
     </div>
 </div>
 
-<!-- How it works - Version améliorée -->
-<section id="how-it-works" class="py-20 bg-gradient-to-b from-white to-blue-50">
+{{-- ════════════════════════════════════════
+    PERSONNES DISPARUES — Urgence
+════════════════════════════════════════ --}}
+<section class="py-20 bg-slate-900" id="disparus">
     <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4">
-                Fonctionnement
-            </span>
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                Comment <span class="text-blue-600">QCT</span> vous aide
-            </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Notre plateforme utilise la puissance de la communauté pour réunir les objets perdus avec leurs propriétaires.
+        <div class="flex flex-col gap-3 mb-12">
+            <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3"><i class="fas fa-exclamation-circle mr-1"></i> Urgent</p>
+            <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Personnes disparues</h2>
+            <div class="w-10 h-[3px] bg-red-500 rounded-sm"></div>
+            <p class="text-base text-slate-400 leading-relaxed max-w-[560px]">
+                Votre aide peut sauver des vies. Si vous avez la moindre information, signalez-la immédiatement.
             </p>
         </div>
-        
-        <div class="grid md:grid-cols-3 gap-10">
-            <!-- Step 1 -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-t-4 border-blue-500">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold mb-6">
-                    1
-                </div>
-                <h3 class="text-xl font-bold mb-3">Signalez la perte ou la trouvaille</h3>
-                <p class="text-gray-600">
-                    Créez une annonce détaillée avec photos et description pour augmenter les chances de retrouvailles.
-                </p>
-            </div>
-            
-            <!-- Step 2 -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-t-4 border-green-500">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 text-2xl font-bold mb-6">
-                    2
-                </div>
-                <h3 class="text-xl font-bold mb-3">Notre communauté agit</h3>
-                <p class="text-gray-600">
-                    Des milliers d'utilisateurs reçoivent des alertes et peuvent aider à identifier ou localiser ce que vous cherchez.
-                </p>
-            </div>
-            
-            <!-- Step 3 -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-t-4 border-purple-500">
-                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-2xl font-bold mb-6">
-                    3
-                </div>
-                <h3 class="text-xl font-bold mb-3">Retrouvailles</h3>
-                <p class="text-gray-600">
-                    Nous facilitons la mise en contact et la vérification pour des retrouvailles en toute sécurité.
-                </p>
-            </div>
-        </div>
-        
-        <div class="mt-16 flex justify-center">
-            <img src="{{asset('2.png')}}" alt="Processus QCT" class="rounded-2xl shadow-xl max-w-full md:max-w-2xl">
-        </div>
-    </div>
-</section>
 
-<!-- Personnes Disparues - Version améliorée -->
-<section class="py-20 bg-white">
-    <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1 bg-red-100 text-red-600 rounded-full text-sm font-semibold mb-4">
-                Urgent
-            </span>
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                Personnes Disparues
-            </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Votre aide peut sauver des vies. Si vous avez des informations, contactez-nous immédiatement.
-            </p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($persons as $key=>$person)
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+            @foreach ($persons as $key => $person)
                 @if ($key < 6)
-                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-2 border border-gray-100">
-                    <div class="relative">
-                        <img class="w-full h-64 object-cover" src="{{ asset(explode(',', $person->images)[0]) }}" alt="Personne disparue">
-                        <span class="absolute top-4 right-4 {{ $person->status == 'lost' ? 'bg-red-500' : 'bg-green-500' }}  text-white text-xs px-3 py-1 rounded-full shadow">{{ $person->status == 'lost' ? 'Disparu(e)' : 'Retrouvé(e)' }}</span>
+                <a href="{{ url('item-detail', $person->id) }}" class="bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden no-underline flex flex-col transition-all hover:border-red-500 hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(239,68,68,.12)]">
+                    <div class="relative h-[220px] overflow-hidden">
+                        <img src="{{ asset(explode(',', $person->images)[0]) }}"
+                             alt="{{ $person->item_name }}"
+                             loading="lazy"
+                             class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.04]">
+                        <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {{ $person->status == 'lost' ? 'bg-red-500/15 text-red-300 border border-red-500/25' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' }}">
+                            <i class="fas fa-{{ $person->status == 'lost' ? 'search' : 'check' }}"></i>
+                            {{ $person->status == 'lost' ? 'Disparu(e)' : 'Retrouvé(e)' }}
+                        </span>
+                        @if ($person->status == 'lost')
+                        <div class="absolute bottom-3 left-3 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_0_0_rgba(239,68,68,.5)]"></div>
+                        @endif
                     </div>
-                    <div class="p-6">
-                        <div class="flex items-center mb-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                                <i class="fas fa-user text-blue-500"></i>
-                            </div>
-                            <h5 class="font-bold text-xl">{{ $person->item_name }}</h5>
-                        </div>
-                        <p class="text-gray-600 mb-4">{{ Str::limit($person->description, 100) }}</p>
-                        <div class="flex items-center justify-between">
-                            <a href="{{ url('item-detail', $person->id) }}" class="text-white bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium transition flex items-center">
-                                <i class="fas fa-info-circle mr-2"></i> Détails
-                            </a>
-                            <span class="text-gray-400 text-sm">{{ $person->created_at->diffForHumans(['locale' => 'fr']) }}</span>
+                    <div class="p-[18px] flex-1 flex flex-col gap-2">
+                        <h3 class="text-base font-bold text-slate-50">{{ $person->item_name }}</h3>
+                        <p class="text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($person->description, 90) }}</p>
+                        <div class="flex items-center justify-between text-xs text-slate-400 mt-1">
+                            <span><i class="fas fa-clock mr-1"></i>{{ $person->created_at->diffForHumans(['locale' => 'fr']) }}</span>
+                            <span class="text-blue-500 font-semibold">Voir <i class="fas fa-arrow-right"></i></span>
                         </div>
                     </div>
-                </div>
+                </a>
                 @endif
             @endforeach
         </div>
-        
-        <div class="flex justify-center mt-12">
-            <a href="{{ url('/all-items?category=personne') }}" class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold shadow-lg hover:bg-blue-700 transition flex items-center">
-                <i class="fas fa-list mr-2"></i> Voir toutes les disparitions
+
+        <div class="text-center mt-10">
+            <a href="{{ url('/all-items?category=Personnes') }}" class="inline-flex items-center gap-2 px-7 py-3 rounded-full text-sm font-semibold cursor-pointer transition-all no-underline border bg-transparent text-slate-50 border-slate-700 hover:bg-slate-800">
+                <i class="fas fa-list"></i> Voir toutes les disparitions
             </a>
         </div>
     </div>
 </section>
 
-<!-- Objets Perdus et Retrouvés - Version améliorée -->
-<section class="py-20 bg-gray-50">
+{{-- ════════════════════════════════════════
+    ANNONCES RÉCENTES
+════════════════════════════════════════ --}}
+<section class="py-20 bg-[#0D1525]" id="recent">
     <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4">
-                Récent
-            </span>
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                Objets Perdus et Retrouvés
-            </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Parcourez les objets récemment signalés comme perdus ou trouvés.
-            </p>
-        </div>
-        
-        <!-- Navigation par catégories -->
-        <div class="flex overflow-x-auto pb-4 mb-8 scrollbar-hide">
-            <div class="flex space-x-3">
-                <button class="px-5 py-2 bg-blue-600 text-white rounded-full font-medium whitespace-nowrap">
-                    Tous
-                </button>
-                <button class="px-5 py-2 bg-white text-gray-700 rounded-full font-medium whitespace-nowrap shadow-sm hover:bg-gray-100">
-                    <i class="fas fa-wallet mr-2"></i> Portefeuilles
-                </button>
-                <button class="px-5 py-2 bg-white text-gray-700 rounded-full font-medium whitespace-nowrap shadow-sm hover:bg-gray-100">
-                    <i class="fas fa-mobile-alt mr-2"></i> Téléphones
-                </button>
-                <button class="px-5 py-2 bg-white text-gray-700 rounded-full font-medium whitespace-nowrap shadow-sm hover:bg-gray-100">
-                    <i class="fas fa-key mr-2"></i> Clés
-                </button>
-                <button class="px-5 py-2 bg-white text-gray-700 rounded-full font-medium whitespace-nowrap shadow-sm hover:bg-gray-100">
-                    <i class="fas fa-id-card mr-2"></i> Documents
-                </button>
-                <button class="px-5 py-2 bg-white text-gray-700 rounded-full font-medium whitespace-nowrap shadow-sm hover:bg-gray-100">
-                    <i class="   mr-2"></i> Animaux
-                </button>
+        <div class="flex flex-row justify-between items-end flex-wrap gap-4 mb-12">
+            <div class="flex flex-col gap-3">
+                <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Récent</p>
+                <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Objets signalés</h2>
+                <div class="w-10 h-[3px] bg-blue-500 rounded-sm"></div>
             </div>
+            <a href="{{ url('/all-items') }}" class="inline-flex items-center gap-2 px-7 py-3 rounded-full text-[13px] font-semibold cursor-pointer transition-all no-underline border bg-transparent text-slate-50 border-slate-700 hover:bg-slate-800">
+                Tout voir <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach ($items as $key=>$item)
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition transform hover:-translate-y-2 border border-gray-100">
-                <div class="relative">
-                    <img class="w-full h-64 object-cover" src="{{ asset(explode(',', $item->images)[0]) }}" alt="Objet perdu/trouvé">
-                    <span class="absolute top-4 right-4 {{ $item->status == 'lost' ? 'bg-red-500' : 'bg-green-500' }} text-white text-xs px-3 py-1 rounded-full shadow">
+
+        <!-- Filtres catégories -->
+        <div class="flex overflow-x-auto gap-2 pb-1 mb-8 scrollbar-none" id="catTabs">
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white active bg-blue-500 border-blue-500 text-white" data-cat="all">Tous</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="documents"><i class="fas fa-id-card mr-1"></i> Documents</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="electronics"><i class="fas fa-mobile-alt mr-1"></i> Téléphones</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="keys"><i class="fas fa-key mr-1"></i> Clés</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="wallet"><i class="fas fa-wallet mr-1"></i> Portefeuilles</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="animal"><i class="fas fa-paw mr-1"></i> Animaux</button>
+        </div>
+
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5" id="itemsGrid">
+            @foreach ($items as $item)
+            <a href="{{ url('item-detail', $item->id) }}"
+               class="item-card bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden no-underline flex flex-col transition-all hover:border-blue-500 hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(59,130,246,.15)]"
+               data-cat="{{ $item->category }}">
+                <div class="relative h-[200px] overflow-hidden">
+                    <img src="{{ asset(explode(',', $item->images)[0]) }}"
+                         alt="{{ $item->item_name }}"
+                         loading="lazy"
+                         class="w-full h-full object-cover transition-transform duration-400 hover:scale-[1.04]">
+                    <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {{ $item->status == 'lost' ? 'bg-red-500/15 text-red-300 border border-red-500/25' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' }}">
                         {{ $item->status == 'lost' ? 'Perdu' : 'Trouvé' }}
                     </span>
                 </div>
-                <div class="p-6">
-                    <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                            <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'plug' : 'box') }} text-blue-500"></i>
-                        </div>
-                        <div>
-                            <h5 class="font-bold text-xl">{{ $item->item_name }}</h5>
-                            <p class="text-sm text-gray-500">{{ ucfirst($item->category) }}</p>
+                <div class="p-4 flex-1 flex flex-col gap-1.5">
+                    <div class="text-[11px] font-semibold uppercase tracking-[1px] text-blue-500 flex items-center gap-1.5">
+                        <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'mobile-alt' : ($item->category == 'keys' ? 'key' : 'box')) }}"></i>
+                        {{ ucfirst($item->category) }}
+                    </div>
+                    <h3 class="text-[15px] font-bold text-slate-50">{{ $item->item_name }}</h3>
+                    <p class="text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($item->description, 80) }}</p>
+                    <div class="flex items-center justify-between text-xs text-slate-400 mt-1.5">
+                        <span><i class="fas fa-clock mr-1"></i>{{ $item->created_at->diffForHumans(['locale' => 'fr']) }}</span>
+                        <span class="text-blue-500 font-semibold">Voir <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ════════════════════════════════════════
+    COMMENT ÇA MARCHE
+════════════════════════════════════════ --}}
+<section class="py-20 bg-slate-800 border-y border-slate-700" id="how-it-works">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+            <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Fonctionnement</p>
+            <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Simple, rapide, efficace</h2>
+            <div class="w-10 h-[3px] bg-blue-500 rounded-sm mx-auto"></div>
+            <p class="text-base text-slate-400 leading-relaxed max-w-[560px] mx-auto">
+                Trois étapes pour réunir objets perdus et propriétaires grâce à la force de la communauté.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap justify-center">
+            <div class="flex-1 min-w-[200px] max-w-[300px] flex flex-col gap-4 p-8 bg-slate-900 border border-slate-700 rounded-[20px]">
+                <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase">01</div>
+                <div class="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-xl">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-50">Signalez</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Créez une annonce avec photos et description précise pour maximiser vos chances.</p>
+            </div>
+            <div class="text-lg text-slate-700 px-1 max-md:hidden"><i class="fas fa-chevron-right"></i></div>
+            <div class="flex-1 min-w-[200px] max-w-[300px] flex flex-col gap-4 p-8 bg-slate-900 border border-slate-700 rounded-[20px]">
+                <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase">02</div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-xl">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-50">La communauté agit</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Des milliers de membres reçoivent des alertes et partagent les informations.</p>
+            </div>
+            <div class="text-lg text-slate-700 px-1 max-md:hidden"><i class="fas fa-chevron-right"></i></div>
+            <div class="flex-1 min-w-[200px] max-w-[300px] flex flex-col gap-4 p-8 bg-slate-900 border border-slate-700 rounded-[20px]">
+                <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase">03</div>
+                <div class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xl">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-50">Retrouvailles</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">Mise en contact sécurisée et vérification pour des retrouvailles en toute confiance.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ════════════════════════════════════════
+    SUCCÈS RÉCENTS — Carousel
+════════════════════════════════════════ --}}
+<section class="py-20 bg-slate-900">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-row justify-between items-end flex-wrap gap-4 mb-12">
+            <div class="flex flex-col gap-3">
+                <p class="text-xs font-bold uppercase tracking-[1.5px] text-emerald-500 mb-3">
+                    <i class="fas fa-check-circle mr-1"></i> Résolus
+                </p>
+                <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Histoires de retrouvailles</h2>
+                <div class="w-10 h-[3px] bg-emerald-500 rounded-sm"></div>
+            </div>
+            <div class="flex gap-2">
+                <button class="carousel-ctrl w-10 h-10 rounded-[10px] bg-slate-800 border border-slate-700 text-slate-50 cursor-pointer text-sm flex items-center justify-center transition-all hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-500 font-sans" id="carPrev"><i class="fas fa-arrow-left"></i></button>
+                <button class="carousel-ctrl w-10 h-10 rounded-[10px] bg-slate-800 border border-slate-700 text-slate-50 cursor-pointer text-sm flex items-center justify-center transition-all hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-500 font-sans" id="carNext"><i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="overflow-hidden rounded-[20px]">
+            <div class="flex gap-5 transition-transform duration-400 ease-in-out" id="carTrack">
+                @foreach($resolvedItems as $item)
+                <div class="min-w-[calc(33.333%-14px)] lg:min-w-[calc(50%-10px)] sm:min-w-[100%] bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden shrink-0">
+                    <div class="relative h-[180px] overflow-hidden">
+                        <img src="{{ asset(explode(',', $item->images)[0]) }}"
+                             alt="{{ $item->item_name }}"
+                             loading="lazy"
+                             class="w-full h-full object-cover">
+                        <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">
+                            <i class="fas fa-check"></i> Retrouvé
+                        </span>
+                    </div>
+                    <div class="p-[18px] flex flex-col gap-2">
+                        <span class="text-[11px] font-bold uppercase tracking-[1px] text-emerald-500">{{ $item->category_name ?? ucfirst($item->category) }}</span>
+                        <h3 class="text-[15px] font-bold text-slate-50">{{ $item->item_name }}</h3>
+                        <p class="text-[13px] text-slate-400 leading-relaxed">{{ Str::limit($item->description, 80) }}</p>
+                        <div class="flex items-center gap-2.5 mt-2 pt-3 border-t border-slate-700">
+                            <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-[13px] font-bold text-white shrink-0">
+                                {{ strtoupper(substr($item->foundBy->name ?? 'A', 0, 1)) }}
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-400">Retrouvé par</p>
+                                <p class="text-[13px] font-semibold">{{ $item->foundBy->name ?? 'Anonyme' }}</p>
+                            </div>
+                            <span class="ml-auto text-xs text-slate-400">
+                                {{ $item->updated_at->diffForHumans(['locale' => 'fr']) }}
+                            </span>
                         </div>
                     </div>
-                    <p class="text-gray-600 mb-4">{{ Str::limit($item->description, 100) }}</p>
-                    <div class="flex items-center justify-between">
-                        <a href="{{ url('item-detail', $item->id) }}" class="text-white bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg font-medium transition flex items-center">
-                            <i class="fas fa-eye mr-2"></i> Voir
-                        </a>
-                        <span class="text-gray-400 text-sm">{{ $item->created_at->diffForHumans(['locale' => 'fr']) }}</span>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ════════════════════════════════════════
+    TÉMOIGNAGES
+════════════════════════════════════════ --}}
+<section class="py-20 bg-[#0D1525] border-t border-slate-700">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+            <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Témoignages</p>
+            <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Ils nous font confiance</h2>
+            <div class="w-10 h-[3px] bg-blue-500 rounded-sm mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+            @php
+            $testis = [
+                ['name'=>'Jean Koffi','city'=>'Abidjan','text'=>'Grâce à QCT, j\'ai retrouvé mon portefeuille avec tous mes documents en moins de 48h. Une plateforme incroyable !','stars'=>5],
+                ['name'=>'Amina Traoré','city'=>'Bouaké','text'=>'Mon téléphone perdu dans un taxi a été retrouvé grâce à la communauté QCT. Merci infiniment !','stars'=>5],
+                ['name'=>'Marc Kouadio','city'=>'Yamoussoukro','text'=>'J\'ai pu retrouver mon chien perdu grâce aux alertes QCT. La rapidité de la communauté est impressionnante.','stars'=>5],
+            ];
+            @endphp
+            @foreach($testis as $t)
+            <div class="bg-slate-800 border border-slate-700 rounded-[20px] p-7 flex flex-col gap-4 transition-colors hover:border-blue-500">
+                <div class="text-amber-500 text-sm flex gap-[3px]">
+                    @for($i=0;$i<$t['stars'];$i++)<i class="fas fa-star"></i>@endfor
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed flex-1 italic">"{{ $t['text'] }}"</p>
+                <div class="flex items-center gap-3 pt-4 border-t border-slate-700">
+                    <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
+                        {{ strtoupper(substr($t['name'],0,1)) }}
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm">{{ $t['name'] }}</p>
+                        <p class="text-xs text-slate-400">{{ $t['city'] }}</p>
                     </div>
                 </div>
             </div>
             @endforeach
         </div>
-        
-        <div class="flex justify-center mt-12">
-            <a href="{{ url('/all-items') }}" class="px-8 py-3 bg-white text-blue-600 rounded-xl font-bold shadow-lg hover:bg-gray-100 transition flex items-center border border-gray-200">
-                <i class="fas fa-search mr-2"></i> Explorer tous les objets
-            </a>
-        </div>
     </div>
 </section>
 
-<!-- Statistiques -->
-<section class="py-20 bg-blue-600 text-white">
+{{-- ════════════════════════════════════════
+    DON — CinetPay
+════════════════════════════════════════ --}}
+<section class="py-20 bg-slate-800 border-t border-slate-700">
     <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4">Notre impact</h2>
-            <p class="text-xl text-blue-100 max-w-2xl mx-auto">
-                Depuis notre création, nous avons aidé à réunir des milliers de personnes avec leurs biens perdus.
-            </p>
-        </div>
-        
-        <div class="grid md:grid-cols-4 gap-8 text-center">
-            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm">
-                <div class="text-5xl font-bold mb-2">142K+</div>
-                <p class="text-blue-100">Retrouvailles</p>
-            </div>
-            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm">
-                <div class="text-5xl font-bold mb-2">75K+</div>
-                <p class="text-blue-100">Objets rendus</p>
-            </div>
-            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm">
-                <div class="text-5xl font-bold mb-2">1.2M+</div>
-                <p class="text-blue-100">Membres</p>
-            </div>
-            <div class="bg-white/10 p-8 rounded-2xl backdrop-blur-sm">
-                <div class="text-5xl font-bold mb-2">24/7</div>
-                <p class="text-blue-100">Disponibilité</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Success Stories Carousel -->
-<section class="py-20 bg-gradient-to-r from-green-600 to-green-500 text-white">
-    <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1 bg-white/20 text-white rounded-full text-sm font-semibold mb-4">
-                Retrouvailles
-            </span>
-            <h2 class="text-4xl font-bold mb-4">Histoires de succès</h2>
-            <p class="text-xl text-green-100 max-w-2xl mx-auto">
-                Découvrez les objets et personnes qui ont été retrouvés grâce à notre communauté.
-            </p>
-        </div>
-
-        <div class="relative overflow-hidden">
-            <!-- Carousel Container -->
-            <div class="success-carousel flex transition-transform duration-500 ease-in-out">
-                @foreach($resolvedItems as $item)
-                <div class="carousel-item min-w-full md:min-w-1/2 lg:min-w-1/3 px-4">
-                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 transform transition hover:scale-105">
-                        <div class="relative h-48 mb-4 rounded-xl overflow-hidden">
-                            <img src="{{ asset(explode(',', $item->images)[0]) }}" 
-                                 class="w-full h-full object-cover" 
-                                 alt="{{ $item->item_name }}">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <h3 class="font-bold text-lg">{{ $item->item_name }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-sm bg-white/20 px-3 py-1 rounded-full">
-                                {{ $item->category_name }}
-                            </span>
-                            <span class="text-sm">
-                                {{ $item->updated_at->diffForHumans(['locale' => 'fr']) }}
-                            </span>
-                        </div>
-                        <p class="text-green-100 mb-4">{{ Str::limit($item->description, 100) }}</p>
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mr-3">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-green-200">Retrouvé par</p>
-                                <p class="font-medium">{{ $item->foundBy->name ?? 'Anonyme' }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <!-- Navigation Buttons -->
-            <button class="carousel-prev absolute left-0 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full w-12 h-12 flex items-center justify-center text-white z-10 ml-4">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-next absolute right-0 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 rounded-full w-12 h-12 flex items-center justify-center text-white z-10 mr-4">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
-
-        <div class="flex justify-center mt-8">
-            <div class="flex space-x-2 carousel-dots">
-                @foreach($resolvedItems as $key => $item)
-                <button class="w-3 h-3 rounded-full bg-white/30 dot-button {{ $key === 0 ? 'bg-white/80' : '' }}" 
-                        data-index="{{ $key }}"></button>
-                @endforeach
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Témoignages -->
-<section class="py-20 bg-white">
-    <div class="container mx-auto px-6">
-        <div class="text-center mb-16">
-            <span class="inline-block px-4 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm font-semibold mb-4">
-                Témoignages
-            </span>
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">
-                Ce que disent nos utilisateurs
-            </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Des histoires qui nous motivent à continuer notre mission.
-            </p>
-        </div>
-        
-        <div class="grid md:grid-cols-3 gap-8">
-            <!-- Témoignage 1 -->
-            <div class="bg-gray-50 p-8 rounded-2xl border border-gray-200">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl mr-4">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold">Jean Koffi</h4>
-                        <p class="text-sm text-gray-500">Abidjan</p>
-                    </div>
-                </div>
-                <p class="text-gray-600 italic">
-                    "Grâce à QCT, j'ai retrouvé mon portefeuille avec tous mes documents en moins de 48h. Une plateforme incroyable !"
+        <div class="grid grid-cols-2 max-md:grid-cols-1 gap-[60px] items-start">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Soutien</p>
+                <h2 class="text-[clamp(24px,3vw,34px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Soutenez notre mission</h2>
+                <p class="text-[15px] text-slate-400 leading-relaxed max-w-[560px]">
+                    Votre don nous aide à maintenir la plateforme et à toucher plus de personnes dans le besoin.
                 </p>
-                <div class="flex mt-4 text-yellow-400">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
+                <div class="flex flex-col gap-3 mt-6">
+                    <div class="flex items-center gap-2.5 text-sm text-slate-400"><i class="fas fa-check-circle text-emerald-500"></i> Plateforme 100% gratuite pour les utilisateurs</div>
+                    <div class="flex items-center gap-2.5 text-sm text-slate-400"><i class="fas fa-check-circle text-emerald-500"></i> Alertes SMS en temps réel</div>
+                    <div class="flex items-center gap-2.5 text-sm text-slate-400"><i class="fas fa-check-circle text-emerald-500"></i> Disponible 24h/24 et 7j/7</div>
                 </div>
             </div>
-            
-            <!-- Témoignage 2 -->
-            <div class="bg-gray-50 p-8 rounded-2xl border border-gray-200">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl mr-4">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold">Amina Traoré</h4>
-                        <p class="text-sm text-gray-500">Bouaké</p>
-                    </div>
-                </div>
-                <p class="text-gray-600 italic">
-                    "Mon téléphone perdu dans un taxi a été retrouvé grâce à la communauté QCT. Merci infiniment !"
-                </p>
-                <div class="flex mt-4 text-yellow-400">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                </div>
-            </div>
-            
-            <!-- Témoignage 3 -->
-            <div class="bg-gray-50 p-8 rounded-2xl border border-gray-200">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xl mr-4">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold">Marc Kouadio</h4>
-                        <p class="text-sm text-gray-500">Yamoussoukro</p>
-                    </div>
-                </div>
-                <p class="text-gray-600 italic">
-                    "J'ai pu retrouver mon chien perdu grâce aux alertes QCT. La rapidité de la communauté est impressionnante."
-                </p>
-                <div class="flex mt-4 text-yellow-400">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Donation Section - Version améliorée -->
-<section class="py-20 bg-gradient-to-r from-blue-900 to-blue-700 text-white">
-    <div class="container mx-auto px-6">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-12">
-                <span class="inline-block px-4 py-1 bg-white/20 rounded-full text-sm font-semibold mb-4">
-                    Soutien
-                </span>
-                <h2 class="text-4xl font-bold mb-4">Soutenez notre initiative</h2>
-                <p class="text-xl text-blue-100 max-w-2xl mx-auto">
-                    Votre don nous aide à maintenir et améliorer la plateforme pour aider plus de personnes.
-                </p>
-            </div>
-            
-            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 shadow-lg">
-                <form id="cinetpay-form" action="javascript:void(0);" method="POST" class="space-y-6">
-                    @csrf
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="amount" class="block text-blue-100 mb-2">Montant du don (XOF)</label>
+            <div class="bg-slate-900 border border-slate-700 rounded-[20px] p-7">
+                <p class="text-base font-bold mb-5">Faire un don</p>
+
+                <div class="flex gap-2 flex-wrap mb-5">
+                    <button class="donate-amt px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 text-[13px] font-semibold cursor-pointer font-sans transition-all hover:bg-blue-500/15 hover:border-blue-500 hover:text-blue-500" onclick="setAmt(1000)">1 000 F</button>
+                    <button class="donate-amt px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 text-[13px] font-semibold cursor-pointer font-sans transition-all hover:bg-blue-500/15 hover:border-blue-500 hover:text-blue-500" onclick="setAmt(2500)">2 500 F</button>
+                    <button class="donate-amt px-4 py-2 rounded-lg bg-blue-500/15 border-blue-500 text-blue-500 text-[13px] font-semibold cursor-pointer font-sans transition-all active" onclick="setAmt(5000)">5 000 F</button>
+                    <button class="donate-amt px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-400 text-[13px] font-semibold cursor-pointer font-sans transition-all hover:bg-blue-500/15 hover:border-blue-500 hover:text-blue-500" onclick="setAmt(10000)">10 000 F</button>
+                </div>
+
+                <div class="flex flex-col gap-3.5 mb-5">
+                    <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Montant (XOF)</label>
                             <div class="relative">
-                                <input type="number" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                                       name="amount" id="amount" placeholder="Ex: 5000" required>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                    <span class="text-blue-200">FCFA</span>
-                                </div>
+                                <input type="number" id="amount" value="5000" placeholder="5000"
+                                       class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
+                                <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400">FCFA</span>
                             </div>
                         </div>
-                        <div>
-                            <label for="customer_phone_number" class="block text-blue-100 mb-2">Téléphone</label>
-                            <input type="text" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                                   name="customer_phone_number" id="customer_phone_number" placeholder="Ex: 0701234567" required>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Téléphone</label>
+                            <input type="text" id="customer_phone_number" placeholder="0701234567"
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
                         </div>
                     </div>
-                    
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="customer_name" class="block text-blue-100 mb-2">Nom</label>
-                            <input type="text" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                                   name="customer_name" id="customer_name" placeholder="Votre nom" required>
+                    <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Nom</label>
+                            <input type="text" id="customer_name" placeholder="Votre nom"
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
                         </div>
-                        <div>
-                            <label for="customer_surname" class="block text-blue-100 mb-2">Prénom</label>
-                            <input type="text" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                                   name="customer_surname" id="customer_surname" placeholder="Votre prénom" required>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Prénom</label>
+                            <input type="text" id="customer_surname" placeholder="Votre prénom"
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
                         </div>
                     </div>
-                    
-                    <div>
-                        <label for="customer_email" class="block text-blue-100 mb-2">Email</label>
-                        <input type="email" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                               name="customer_email" id="customer_email" placeholder="Votre email" required>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Email</label>
+                        <input type="email" id="customer_email" placeholder="email@exemple.com"
+                               class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
                     </div>
-                    
-                    <div class="grid md:grid-cols-3 gap-6">
-                        <div>
-                            <label for="customer_address" class="block text-blue-100 mb-2">Adresse</label>
-                            <input type="text" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                                   name="customer_address" id="customer_address" placeholder="Votre adresse" required>
+                    <div class="grid grid-cols-2 max-sm:grid-cols-1 gap-3">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Ville</label>
+                            <input type="text" id="customer_city" placeholder="Abidjan"
+                                   class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
                         </div>
-                        <div>
-                            <label for="customer_city" class="block text-blue-100 mb-2">Ville</label>
-                            <input type="text" class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white placeholder-blue-200" 
-                                   name="customer_city" id="customer_city" placeholder="Votre ville" required>
-                        </div>
-                        <div>
-                            <label for="customer_country" class="block text-blue-100 mb-2">Pays</label>
-                            <select class="w-full px-5 py-3 bg-white/10 border border-white/20 rounded-lg focus:ring-2 focus:ring-white focus:border-white text-white" 
-                                    name="customer_country" id="customer_country" required>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Pays</label>
+                            <select id="customer_country"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)]">
                                 <option value="CI">Côte d'Ivoire</option>
                                 <option value="BF">Burkina Faso</option>
                                 <option value="SN">Sénégal</option>
                                 <option value="ML">Mali</option>
-                                <option value="NE">Niger</option>
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="pt-4">
-                        <button type="submit" onclick="checkout()" 
-                                class="w-full py-4 bg-white text-blue-700 rounded-xl font-bold hover:bg-blue-50 transition flex items-center justify-center">
-                            <i class="fas fa-heart mr-3"></i> Faire un don maintenant
-                        </button>
+                    <input type="hidden" id="customer_address" value="Abidjan">
+                </div>
+
+                <button onclick="checkout()" class="inline-flex items-center gap-2 px-3.5 py-3.5 rounded-xl text-[15px] font-semibold cursor-pointer transition-all no-underline border-none bg-blue-500 text-white hover:bg-blue-600 w-full justify-center">
+                    <i class="fas fa-heart"></i> Faire un don maintenant
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{{-- ════════════════════════════════════════
+    CONTACT
+════════════════════════════════════════ --}}
+<section class="py-20 bg-slate-900 border-t border-slate-700">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 max-md:grid-cols-1 gap-[60px] items-start">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Contact</p>
+                <h2 class="text-[clamp(24px,3vw,34px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Nous contacter</h2>
+                <div class="w-10 h-[3px] bg-blue-500 rounded-sm"></div>
+                <p class="text-[15px] text-slate-400 leading-relaxed max-w-[560px] mt-3">Une question ou besoin d'aide ? Notre équipe est disponible pour vous.</p>
+
+                <div class="flex flex-col gap-5 mt-8">
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-0.5">Adresse</p>
+                            <p class="text-slate-400 text-sm">Plateau, Abidjan, Côte d'Ivoire</p>
+                        </div>
                     </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-0.5">Téléphone</p>
+                            <p class="text-slate-400 text-sm">+225 07 00 00 00 00</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-0.5">Email</p>
+                            <p class="text-slate-400 text-sm">contact@qct.ci</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 shrink-0">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-0.5">Heures d'ouverture</p>
+                            <p class="text-slate-400 text-sm">Lun–Ven : 8h–18h &nbsp;|&nbsp; Sam : 9h–13h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 rounded-[20px] p-8">
+                @if (Session::has('messages'))
+                <div class="p-3.5 mb-5 rounded-[10px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-sm">
+                    <i class="fas fa-check-circle mr-2"></i>{{ Session::get('messages') }}
+                </div>
+                @endif
+
+                <p class="text-base font-bold mb-5">Envoyez-nous un message</p>
+
+                <form action="{{ url('contact-us') }}" method="POST" class="flex flex-col gap-4">
+                    @csrf
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Votre nom</label>
+                        <input type="text" name="name" placeholder="Nom complet" required
+                               class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Votre email</label>
+                        <input type="email" name="email" placeholder="email@exemple.com" required
+                               class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Message</label>
+                        <textarea name="message" rows="5" placeholder="Votre message…" required
+                                  class="w-full bg-slate-900 border border-slate-700 rounded-[10px] px-3.5 py-[11px] text-sm text-slate-50 font-sans outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)] placeholder:text-slate-400 resize-y"></textarea>
+                    </div>
+                    <button type="submit" class="inline-flex items-center gap-2 px-3.5 py-3.5 rounded-xl text-[15px] font-semibold cursor-pointer transition-all no-underline border-none bg-blue-500 text-white hover:bg-blue-600 justify-center">
+                        <i class="fas fa-paper-plane"></i> Envoyer le message
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Contact Section - Version améliorée -->
-<section class="py-20 bg-gray-50">
-    <div class="container mx-auto px-6">
-        <div class="max-w-4xl mx-auto">
-            <div class="text-center mb-12">
-                <span class="inline-block px-4 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4">
-                    Contact
-                </span>
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Nous contacter</h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                    Une question, une suggestion ou besoin d'aide ? Écrivez-nous.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-10">
-                <div class="bg-white rounded-2xl shadow-lg p-8 h-full">
-                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Envoyez-nous un message</h3>
-                    
-                    @if (Session::has('messages'))
-                    <div class="p-4 mb-6 rounded-lg bg-green-100 text-green-700">
-                        {{ Session::get('messages') }}
-                    </div>
-                    @endif
-                    
-                    <form action="{{ url('contact-us') }}" method="POST" class="space-y-6">
-                        @csrf
-                        <div>
-                            <label for="name" class="block text-gray-700 mb-2">Votre nom</label>
-                            <input type="text" class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400" 
-                                   name="name" placeholder="Votre nom complet" required>
-                        </div>
-                        
-                        <div>
-                            <label for="email" class="block text-gray-700 mb-2">Votre email</label>
-                            <input type="email" class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400" 
-                                   name="email" placeholder="email@exemple.com" required>
-                        </div>
-                        
-                        <div>
-                            <label for="message" class="block text-gray-700 mb-2">Votre message</label>
-                            <textarea class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-400" 
-                                      name="message" rows="5" placeholder="Écrivez votre message ici..." required></textarea>
-                        </div>
-                        
-                        <div>
-                            <button type="submit" class="px-8 py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition w-full">
-                                Envoyer le message
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="bg-blue-600 rounded-2xl shadow-lg p-8 text-white h-full">
-                    <h3 class="text-2xl font-bold mb-6">Nos coordonnées</h3>
-                    
-                    <div class="space-y-6">
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl mr-4 mt-1">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg mb-1">Adresse</h4>
-                                <p class="text-blue-100">Plateau, Abidjan, Côte d'Ivoire</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl mr-4 mt-1">
-                                <i class="fas fa-phone-alt"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg mb-1">Téléphone</h4>
-                                <p class="text-blue-100">+225 XX XX XX XX</p>
-                                <p class="text-blue-100">+225 XX XX XX XX</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl mr-4 mt-1">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg mb-1">Email</h4>
-                                <p class="text-blue-100">contact@qct.ci</p>
-                                <p class="text-blue-100">support@qct.ci</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-xl mr-4 mt-1">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-lg mb-1">Heures d'ouverture</h4>
-                                <p class="text-blue-100">Lundi - Vendredi: 8h - 18h</p>
-                                <p class="text-blue-100">Samedi: 9h - 13h</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-8 pt-6 border-t border-white/20">
-                        <h4 class="font-bold text-lg mb-4">Suivez-nous</h4>
-                        <div class="flex space-x-4">
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl hover:bg-white/20 transition">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl hover:bg-white/20 transition">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl hover:bg-white/20 transition">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xl hover:bg-white/20 transition">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.querySelector('.success-carousel');
-    const items = document.querySelectorAll('.carousel-item');
-    const dots = document.querySelectorAll('.dot-button');
-    const prevBtn = document.querySelector('.carousel-prev');
-    const nextBtn = document.querySelector('.carousel-next');
-    
-    let currentIndex = 0;
-    const itemWidth = items[0].clientWidth;
-    const visibleItems = window.innerWidth < 768 ? 1 : (window.innerWidth < 1024 ? 2 : 3);
-    
-    function updateCarousel() {
-        const offset = -currentIndex * itemWidth * visibleItems;
-        carousel.style.transform = `translateX(${offset}px)`;
-        
-        // Update dots
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('bg-white/80', index === currentIndex);
-        });
-    }
-    
-    // Next button
-    nextBtn.addEventListener('click', () => {
-        if (currentIndex < items.length - visibleItems) {
-            currentIndex++;
-            updateCarousel();
-        }
-    });
-    
-    // Previous button
-    prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCarousel();
-        }
-    });
-    
-    // Dot navigation
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            currentIndex = index;
-            updateCarousel();
-        });
-    });
-    
-    // Auto-rotate (optional)
-    let interval = setInterval(() => {
-        if (currentIndex < items.length - visibleItems) {
-            currentIndex++;
-        } else {
-            currentIndex = 0;
-        }
-        updateCarousel();
-    }, 5000);
-    
-    // Pause on hover
-    carousel.addEventListener('mouseenter', () => {
-        clearInterval(interval);
-    });
-    
-    carousel.addEventListener('mouseleave', () => {
-        interval = setInterval(() => {
-            if (currentIndex < items.length - visibleItems) {
-                currentIndex++;
+// ── Category filter tabs
+document.querySelectorAll('.cat-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active', 'bg-blue-500', 'border-blue-500', 'text-white'));
+        btn.classList.add('active', 'bg-blue-500', 'border-blue-500', 'text-white');
+        const cat = btn.dataset.cat;
+        document.querySelectorAll('.item-card').forEach(card => {
+            if (cat === 'all' || card.dataset.cat === cat) {
+                card.classList.remove('hidden');
             } else {
-                currentIndex = 0;
+                card.classList.add('hidden');
             }
-            updateCarousel();
-        }, 5000);
-    });
-    
-    // Responsive adjustments
-    window.addEventListener('resize', () => {
-        const newVisibleItems = window.innerWidth < 768 ? 1 : (window.innerWidth < 1024 ? 2 : 3);
-        if (visibleItems !== newVisibleItems) {
-            visibleItems = newVisibleItems;
-            updateCarousel();
-        }
+        });
     });
 });
-</script>
 
-<!-- Scripts -->
-<script src="https://cdn.cinetpay.com/seamless/main.js"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-<script>
-  function checkout() {
-    var amount = document.getElementById('amount').value;
-    var customer_name = document.getElementById('customer_name').value;
-    var customer_surname = document.getElementById('customer_surname').value;
-    var customer_email = document.getElementById('customer_email').value;
-    var customer_phone_number = document.getElementById('customer_phone_number').value;
-    var customer_address = document.getElementById('customer_address').value;
-    var customer_city = document.getElementById('customer_city').value;
-    var customer_country = document.getElementById('customer_country').value;
-    
-    CinetPay.setConfig({
-        apikey: '{{ env('CINETPAY_API_KEY') }}',
-        site_id: '{{ env('CINETPAY_SITE_ID') }}',
-        notify_url: 'http://127.0.0.1:8000/add-item',
-        mode: 'PRODUCTION'
+// ── Carousel
+(function() {
+    const track   = document.getElementById('carTrack');
+    const prevBtn = document.getElementById('carPrev');
+    const nextBtn = document.getElementById('carNext');
+    if (!track) return;
+
+    let idx = 0;
+
+    function visibleCount() {
+        return window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3;
+    }
+
+    function getCardWidth() {
+        const card = track.querySelector('.success-card');
+        return card ? card.offsetWidth + 20 : 0;
+    }
+
+    function update() {
+        const max = track.querySelectorAll('.success-card').length - visibleCount();
+        idx = Math.max(0, Math.min(idx, max));
+        track.style.transform = `translateX(-${idx * getCardWidth()}px)`;
+    }
+
+    nextBtn.addEventListener('click', () => { idx++; update(); });
+    prevBtn.addEventListener('click', () => { idx--; update(); });
+    window.addEventListener('resize', () => update());
+
+    let autoplay = setInterval(() => { idx++; update(); }, 5000);
+    track.addEventListener('mouseenter', () => clearInterval(autoplay));
+    track.addEventListener('mouseleave', () => {
+        autoplay = setInterval(() => { idx++; update(); }, 5000);
     });
-    
-    CinetPay.getCheckout({
-        "transaction_id": Math.floor(Math.random() * 100000000).toString(),
-        "amount": amount,
-        "currency": "XOF",
-        "description": "Donation pour QCT",
-        "customer_id": "user_" + Math.floor(Math.random() * 10000),
-        "customer_name": customer_name,
-        "customer_surname": customer_surname,
-        "customer_email": customer_email,
-        "customer_phone_number": customer_phone_number,
-        "customer_address": customer_address,
-        "customer_city": customer_city,
-        "customer_country": customer_country,
-        "customer_state": "CI",
-        "customer_zip_code": "",
-        "channels": "ALL",
-    });
-    
-    CinetPay.waitResponse(function(data) {
-        if (data.status == "REFUSED") {
-            Swal.fire({
-                icon: 'error',
-                title: 'Paiement échoué',
-                text: 'Votre paiement n\'a pas abouti. Veuillez réessayer.',
-                confirmButtonColor: '#3B82F6'
-            });
-        } else if (data.status == "ACCEPTED") {
-            Swal.fire({
-                icon: 'success',
-                title: 'Merci pour votre don!',
-                text: 'Votre paiement a été effectué avec succès.',
-                confirmButtonColor: '#10B981'
-            });
+})();
+
+// ── Donate amount shortcuts
+function setAmt(v) {
+    document.getElementById('amount').value = v;
+    document.querySelectorAll('.donate-amt').forEach(b => {
+        if (parseInt(b.textContent.replace(/\D/g,'')) === v) {
+            b.classList.add('active', 'bg-blue-500/15', 'border-blue-500', 'text-blue-500');
+        } else {
+            b.classList.remove('active', 'bg-blue-500/15', 'border-blue-500', 'text-blue-500');
         }
     });
-    
-    CinetPay.onError(function(data) {
-        console.log(data);
-        Swal.fire({
-            icon: 'error',
-            title: 'Erreur',
-            text: 'Une erreur est survenue lors du traitement de votre paiement.',
-            confirmButtonColor: '#3B82F6'
-        });
+}
+
+// ── CinetPay checkout
+function checkout() {
+    CinetPay.setConfig({
+        apikey: '{{ env("CINETPAY_API_KEY") }}',
+        site_id: '{{ env("CINETPAY_SITE_ID") }}',
+        notify_url: '{{ url("/payment/notify") }}',
+        mode: 'PRODUCTION'
     });
-  }
+    CinetPay.getCheckout({
+        transaction_id: Math.floor(Math.random() * 100000000).toString(),
+        amount: document.getElementById('amount').value,
+        currency: 'XOF',
+        description: 'Donation pour QCT',
+        customer_id: 'user_' + Math.floor(Math.random() * 10000),
+        customer_name: document.getElementById('customer_name').value,
+        customer_surname: document.getElementById('customer_surname').value,
+        customer_email: document.getElementById('customer_email').value,
+        customer_phone_number: document.getElementById('customer_phone_number').value,
+        customer_address: document.getElementById('customer_address').value,
+        customer_city: document.getElementById('customer_city').value,
+        customer_country: document.getElementById('customer_country').value,
+        customer_state: 'CI',
+        customer_zip_code: '',
+        channels: 'ALL',
+    });
+    CinetPay.waitResponse(function(data) {
+        const isOk = data.status === 'ACCEPTED';
+        alert(isOk ? '✅ Merci pour votre don !' : '❌ Paiement refusé. Veuillez réessayer.');
+    });
+    CinetPay.onError(function(data) {
+        console.error(data);
+        alert('Une erreur est survenue lors du paiement.');
+    });
+}
 </script>
+
+<style>
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0) translateX(-50%); }
+        50% { transform: translateY(-8px) translateX(-50%); }
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+        70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .animate-bounce {
+        animation: bounce 2s infinite;
+    }
+    .animate-pulse {
+        animation: pulse 1.5s infinite;
+    }
+</style>
+
 @endsection

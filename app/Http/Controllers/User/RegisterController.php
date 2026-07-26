@@ -61,7 +61,7 @@ class RegisterController extends Controller
             return redirect("admin/dashboard");
         }
 
-        Session::flash("message", "Record Not found!");
+        Session::flash("message", "Email ou mot de passe incorrect!");
         return redirect()->back();
     }
 

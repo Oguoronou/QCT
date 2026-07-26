@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\ItemClaimedNotification;
+use App\Notifications\OwnershipClaimedNotification;
 
 class ItemController extends Controller
 {
@@ -19,15 +21,23 @@ class ItemController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Vérifie que l'utilisateur est propriétaire de l'item
+     */
+    private function authorizeItem(Item $item): bool
+    {
+        return $item->user_id === Auth::id();
+    }
+
     public function index()
     {
         try {
             $user_id = Auth::user()->id ?? 1;
 
-            $items = Item::where("user_id", $user_id)->get();
+            $items = Item::where("user_id", $user_id)->paginate(10);
             if (isset($_GET["lost_found_status"])) {
                 $lost_found_status = $_GET["lost_found_status"];
-                $items = Item::where("user_id", $user_id)->where("lost_found_status", $lost_found_status)->get();
+                $items = Item::where("user_id", $user_id)->where("lost_found_status", $lost_found_status)->paginate(10);
             }
 
             return view('my_items', ["items" => $items]);
@@ -37,11 +47,17 @@ class ItemController extends Controller
         }
     }
 
+    private function showAddItemForm(string $type)
+    {
+        $categories = Category::all();
+
+        return view('add_item', compact('categories', 'type'));
+    }
+
     public function create()
     {
         try {
-            $categories = Category::all();
-            return view('add_item', compact('categories'));
+            return $this->showAddItemForm('lost');
         } catch (\Exception $e) {
             Session::flash("error", "Une erreur est survenue lors du chargement du formulaire.");
             return redirect()->back();
@@ -57,7 +73,7 @@ class ItemController extends Controller
                 'lost_date' => 'required|date',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'description' => 'required|string',
-                'type' => 'required|in:lost,found',
+                'status' => 'required|in:lost,found',
             ]);
 
             // Initialisation du tableau des chemins d'images
@@ -85,11 +101,11 @@ class ItemController extends Controller
                 'date' => $request->lost_date,
                 'images' => !empty($imagePaths) ? implode(',', $imagePaths) : null,
                 'description' => $request->description,
-                'status' => $request->type,
+                'status' => $request->status,
                 'lost_found_status' => 'pending',
             ]);
 
-            Session::flash("message", $request->type == 'lost'
+            Session::flash("message", $request->status == 'lost'
                 ? "Objet perdu ajouté, nous recherchons..."
                 : "Objet trouvé ajouté, nous cherchons le propriétaire...");
 
@@ -112,7 +128,7 @@ class ItemController extends Controller
     public function itemDetail($id)
     {
         try {
-            $item = Item::with('users')->findOrFail($id);
+            $item = Item::with('user', 'foundUser')->findOrFail($id);
             return view('item_detail', compact('item'));
         } catch (\Exception $e) {
             Session::flash("error", "Objet introuvable.");
@@ -123,8 +139,7 @@ class ItemController extends Controller
     public function foundItem()
     {
         try {
-            $categories = Category::all();
-            return view('add_found_item', compact('categories'));
+            return $this->showAddItemForm('found');
         } catch (\Exception $e) {
             Session::flash("error", "Une erreur est survenue lors du chargement du formulaire.");
             return redirect()->back();
@@ -135,6 +150,12 @@ class ItemController extends Controller
     {
         try {
             $item = Item::findOrFail($id);
+            
+            if (!$this->authorizeItem($item)) {
+                Session::flash("error", "Vous n'êtes pas autorisé à modifier cet objet.");
+                return redirect()->back();
+            }
+
             $categories = Category::all();
 
             return view('item_edit', compact('item', 'categories'));
@@ -148,6 +169,11 @@ class ItemController extends Controller
     {
         try {
             $item = Item::findOrFail($id);
+
+            if (!$this->authorizeItem($item)) {
+                Session::flash("error", "Vous n'êtes pas autorisé à supprimer cet objet.");
+                return redirect()->back();
+            }
 
             // Suppression des images associées
             if ($item->images) {
@@ -182,6 +208,11 @@ class ItemController extends Controller
             ]);
 
             $item = Item::findOrFail($request->id);
+
+            if (!$this->authorizeItem($item)) {
+                Session::flash("error", "Vous n'êtes pas autorisé à modifier cet objet.");
+                return redirect()->back();
+            }
 
             // Gestion des images
             $imagePaths = [];
@@ -226,6 +257,12 @@ class ItemController extends Controller
     {
         try {
             $item = Item::findOrFail($id);
+            
+            if (!$this->authorizeItem($item)) {
+                Session::flash("error", "Vous n'êtes pas autorisé à modifier cet objet.");
+                return redirect()->back();
+            }
+
             $item->update(['lost_found_status' => 'found']);
 
             Session::flash("message", "Objet marqué comme trouvé !");
@@ -240,6 +277,12 @@ class ItemController extends Controller
     {
         try {
             $item = Item::findOrFail($id);
+            
+            if (!$this->authorizeItem($item)) {
+                Session::flash("error", "Vous n'êtes pas autorisé à modifier cet objet.");
+                return redirect()->back();
+            }
+
             $item->update(['lost_found_status' => 'delivered']);
 
             Session::flash("message", "Objet marqué comme remis à son propriétaire !");
@@ -253,7 +296,7 @@ class ItemController extends Controller
     public function allItems(Request $request)
     {
         try {
-            $query = Item::query();
+            $query = Item::with('user', 'foundUser');
 
             if ($request->filled('search')) {
                 $search = $request->input('search');
@@ -271,7 +314,7 @@ class ItemController extends Controller
                 $query->where('status', $request->input('status'));
             }
 
-            $items = $query->simplePaginate(10);
+            $items = $query->paginate(10);
             $categories = Category::all();
 
             return view('all_items', compact('items', 'categories'));
@@ -300,8 +343,8 @@ class ItemController extends Controller
                 'lost_found_status' => 'claimed',
             ]);
 
-            // Envoyer une notification au propriétaire (à implémenter)
-            // $item->user->notify(new ItemClaimedNotification($item, Auth::user()));
+            // Envoyer une notification au propriétaire
+            $item->user->notify(new ItemClaimedNotification($item, Auth::user()));
 
             Session::flash("message", "Vous avez signalé avoir trouvé cet objet. Le propriétaire sera notifié.");
             return redirect()->back();
@@ -333,8 +376,10 @@ class ItemController extends Controller
                 'lost_found_status' => 'delivered',
             ]);
 
-            // Envoyer une notification au trouveur (à implémenter)
-            // $item->foundUser->notify(new ClaimValidatedNotification($item));
+            // Envoyer une notification au trouveur
+            if ($item->foundUser) {
+                $item->foundUser->notify(new \Illuminate\Notifications\Messages\MailMessage);
+            }
 
             Session::flash("message", "Vous avez confirmé la récupération de votre objet. Merci !");
             return redirect()->back();
@@ -370,9 +415,9 @@ class ItemController extends Controller
             ]);
 
             // Envoyer une notification au posteur original
-            // $item->user->notify(new OwnershipClaimedNotification($item, Auth::user()));
+            $item->user->notify(new OwnershipClaimedNotification($item, Auth::user()));
 
-            $message = $item->category_name == 'personne'
+            $message = $item->category_name == 'Personnes'
                 ? "Vous avez signalé qu'il s'agit de votre proche. Le posteur sera notifié."
                 : "Vous avez signalé que cet objet vous appartient. Le posteur sera notifié.";
 
@@ -409,7 +454,7 @@ class ItemController extends Controller
             // Envoyer une notification au réclamant
             // $item->foundUser->notify(new OwnershipValidatedNotification($item));
 
-            $message = $item->category_name == 'personne'
+            $message = $item->category_name == 'Personnes'
                 ? "Vous avez confirmé avoir retrouvé la personne avec son proche. Merci !"
                 : "Vous avez confirmé avoir rendu l'objet à son propriétaire. Merci !";
 

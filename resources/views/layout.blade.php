@@ -1,268 +1,193 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QCT - Plateforme d'objets perdus et trouvés</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'QCT') }} — Retrouvez ce qui compte</title>
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tailwind CSS -->
-    @vite('resources/css/app.css')
-    
-    <style>
-        :root {
-            --primary: #4154f1;
-            --primary-hover: #717ff5;
-            --dark: #0a0e34;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .mobile-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        
-        .mobile-menu.open {
-            max-height: 500px; /* Ajustez selon le contenu */
-        }
-        
-        .account-menu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        
-        .account-menu.open {
-            max-height: 300px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    @vite(['resources/css/app.css'])
 </head>
-<body class="flex flex-col min-h-screen bg-gray-50" x-data="{ mobileMenuOpen: false, accountMenuOpen: false }">
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white shadow-sm">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo -->
-                <a href="{{ url('/') }}" class="text-2xl font-bold text-primary">
-                    QCT
-                </a>
-                
-                <!-- Mobile menu button -->
-                <button class="md:hidden rounded-md p-2 text-gray-700 hover:bg-gray-100 focus:outline-none" 
-                        @click="mobileMenuOpen = !mobileMenuOpen">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-1">
-                    <div class="flex space-x-4">
-                        <a href="{{ url('/') }}" class="px-3 py-2 rounded-md text-sm font-medium {{ request()->is('/') ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-gray-100' }}">
-                            Accueil
-                        </a>
-                        
-                        <div class="relative" x-data="{ accountMenuOpen: false }">
-                            <button @click="accountMenuOpen = !accountMenuOpen" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 flex items-center">
-                                <i class="fas fa-user-circle mr-1"></i> Mon compte
-                                <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-                            
-                            <div x-show="accountMenuOpen" @click.away="accountMenuOpen = false" 
-                                 class="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                                <div class="py-1">
-                                    <a href="{{ url('my-items') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-box mr-2"></i> Mes objets
-                                    </a>
-                                    <a href="{{ url('all-items') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-search mr-2"></i> Tous les objets
-                                    </a>
-                                    <a href="{{ url('add-item') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-plus-circle mr-2"></i> Ajouter un objet
-                                    </a>
-                                    <div class="border-t border-gray-100"></div>
-                                    <a href="{{ url('my-account') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-cog mr-2"></i> Paramètres
-                                    </a>
-                                    <a href="{{ url('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
-                                    </a>
-                                </div>
+<body class="font-['Inter'] bg-slate-900 text-slate-50 min-h-screen antialiased">
+
+    <!-- ── NAVBAR ───────────────────────────────────── -->
+    <nav class="sticky top-0 z-[100] bg-slate-900/85 backdrop-blur-md border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
+
+            <!-- Logo -->
+            <a class="flex items-center gap-2.5 no-underline shrink-0" href="{{ url('/') }}">
+                <div class="w-9 h-9 bg-blue-500 rounded-[10px] flex items-center justify-center text-base text-white">
+                    <i class="fas fa-search-location"></i>
+                </div>
+                <span class="text-xl font-extrabold text-white tracking-[-0.5px]">Q<span class="text-blue-500">CT</span></span>
+            </a>
+
+            <!-- Search (desktop) -->
+            <div class="flex-1 max-w-[420px] relative hidden md:block">
+                <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[13px]"></i>
+                <input type="text" placeholder="Rechercher un objet, une personne…"
+                       onkeydown="if(event.key==='Enter') window.location='/all-items?q='+encodeURIComponent(this.value)"
+                       class="w-full bg-slate-800 border border-slate-700 rounded-full py-2 pl-10 pr-4 text-sm text-slate-50 outline-none transition-colors focus:border-blue-500 placeholder:text-slate-400">
+            </div>
+
+            <!-- Links -->
+            <ul class="hidden md:flex items-center gap-2 list-none" id="navLinks">
+                <li><a href="{{ url('/all-items') }}" class="text-slate-400 no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors hover:text-slate-50 hover:bg-slate-800 whitespace-nowrap"><i class="fas fa-th mr-1"></i> Explorer</a></li>
+                <li><a href="{{ url('/all-items?category=Personnes') }}" class="text-amber-400 no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors hover:text-amber-300 hover:bg-slate-800 whitespace-nowrap"><i class="fas fa-exclamation-circle mr-1"></i> Disparus</a></li>
+                <li><a href="{{ url('add-item') }}" class="text-blue-500 no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors hover:text-blue-400 hover:bg-slate-800 whitespace-nowrap"><i class="fas fa-plus mr-1"></i> Signaler</a></li>
+
+                @guest
+                    <li><a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-semibold no-underline border bg-transparent text-slate-50 border-slate-700 hover:bg-slate-800 transition-all">Connexion</a></li>
+                    @if (Route::has('register'))
+                    <li><a href="{{ route('register') }}" class="inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-semibold no-underline bg-blue-500 text-white hover:bg-blue-600 transition-all">Inscription</a></li>
+                    @endif
+                @else
+                    <li class="relative">
+                        <button onclick="toggleDropdown(event)" 
+                                class="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-full border border-slate-700 bg-slate-800 transition-colors hover:border-blue-500 font-sans text-slate-50">
+                            <div class="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
+                            <span class="text-[13px] font-semibold text-slate-50 max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">{{ Auth::user()->name }}</span>
+                            <i class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200" id="dropdownArrow"></i>
+                        </button>
+                        <div id="userDropdown" 
+                             class="hidden absolute right-0 top-[calc(100%+8px)] bg-slate-800 border border-slate-700 rounded-xl min-w-[180px] shadow-[0_4px_24px_rgba(0,0,0,.35)] overflow-hidden z-[200]">
+                            <a href="{{ url('/my-account') }}" class="block w-full text-left px-4 py-2.5 text-sm text-slate-400 no-underline bg-transparent border-none cursor-pointer transition-colors hover:bg-blue-500/10 hover:text-slate-50"><i class="fas fa-user-circle mr-2"></i> Mon profil</a>
+                            <a href="{{ url('/my-items') }}" class="block w-full text-left px-4 py-2.5 text-sm text-slate-400 no-underline bg-transparent border-none cursor-pointer transition-colors hover:bg-blue-500/10 hover:text-slate-50"><i class="fas fa-list mr-2"></i> Mes annonces</a>
+                            <a href="{{ route('logout') }}" class="block w-full text-left px-4 py-2.5 text-sm text-red-400 no-underline bg-transparent border-none cursor-pointer transition-colors hover:bg-red-500/10 hover:text-red-300"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">@csrf</form>
                         </div>
-                        
-                        <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 flex items-center">
-                            <i class="fas fa-envelope mr-1"></i> Contact
-                        </a>
-                    </div>
-                    
-                    <div class="ml-4">
-                        <a href="{{ url('add-item') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover">
-                            <i class="fas fa-plus mr-2"></i> Déclarer un objet
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Mobile Menu -->
-        <div class="md:hidden mobile-menu" :class="{ 'open': mobileMenuOpen }" x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="{{ url('/') }}" class="block px-3 py-2 rounded-md text-base font-medium {{ request()->is('/') ? 'bg-blue-50 text-primary' : 'text-gray-700 hover:bg-gray-100' }}">
-                    Accueil
-                </a>
-                
-                <div class="relative">
-                    <button @click="accountMenuOpen = !accountMenuOpen" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 flex items-center justify-between">
-                        <span><i class="fas fa-user-circle mr-1"></i> Mon compte</span>
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    
-                    <div class="account-menu pl-4" :class="{ 'open': accountMenuOpen }">
-                        <a href="{{ url('my-items') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-box mr-2"></i> Mes objets
-                        </a>
-                        <a href="{{ url('all-items') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-search mr-2"></i> Tous les objets
-                        </a>
-                        <a href="{{ url('add-item') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-plus-circle mr-2"></i> Ajouter un objet
-                        </a>
-                        <a href="{{ url('my-account') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-cog mr-2"></i> Paramètres
-                        </a>
-                        <a href="{{ url('logout') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
-                        </a>
-                    </div>
-                </div>
-                
-                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-envelope mr-1"></i> Contact
-                </a>
-                
-                <a href="{{ url('add-item') }}" class="block w-full text-center px-3 py-2 rounded-md text-base font-medium text-white bg-primary hover:bg-primary-hover">
-                    <i class="fas fa-plus mr-1"></i> Déclarer un objet
-                </a>
-            </div>
+                    </li>
+                @endguest
+            </ul>
+
+            <!-- Mobile toggle -->
+            <button class="hidden max-md:flex items-center justify-center w-9 h-9 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer text-slate-50" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+
         </div>
     </nav>
 
-    <!-- Le reste de votre code reste inchangé -->
-    <!-- Contenu principal -->
-    <main class="flex-grow">
+    <!-- ── MAIN ─────────────────────────────────────── -->
+    <main class="min-h-[calc(100vh-64px)]">
         @yield('content')
     </main>
 
-       <!-- Footer -->
-    <footer class="bg-gradient-to-r from-dark to-blue-900 text-white mt-auto">
-        <div class="container mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Colonne 1 - Logo et description -->
+    <!-- ── FOOTER ───────────────────────────────────── -->
+    <footer class="bg-slate-800 border-t border-slate-700 pt-12 pb-6 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-[2fr_1fr_1fr_1fr] max-lg:grid-cols-2 max-sm:grid-cols-1 gap-10 mb-10">
+
                 <div>
-                    <div class="text-3xl font-bold mb-4">
-                        <span class="text-primary">Q</span>CT
-                    </div>
-                    <p class="text-gray-300 mb-4">
-                        Plateforme collaborative pour retrouver les objets perdus et rendre les objets trouvés à leurs propriétaires.
+                    <a class="flex items-center gap-2.5 no-underline shrink-0 mb-0" href="{{ url('/') }}">
+                        <div class="w-9 h-9 bg-blue-500 rounded-[10px] flex items-center justify-center text-base text-white">
+                            <i class="fas fa-search-location"></i>
+                        </div>
+                        <span class="text-xl font-extrabold text-white tracking-[-0.5px]">Q<span class="text-blue-500">CT</span></span>
+                    </a>
+                    <p class="text-sm text-slate-400 leading-relaxed mt-3 max-w-[280px]">
+                        La plateforme communautaire qui connecte objets perdus et propriétaires, et aide à retrouver les personnes disparues en Côte d'Ivoire.
                     </p>
-                    <div class="flex space-x-3">
-                        <a href="#" class="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center hover:bg-primary transition">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center hover:bg-primary transition">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center hover:bg-primary transition">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center hover:bg-primary transition">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                    </div>
                 </div>
-                
-                <!-- Colonne 2 - Liens rapides -->
+
                 <div>
-                    <h3 class="text-lg font-semibold mb-4 relative pb-2 after:absolute after:left-0 after:bottom-0 after:w-10 after:h-0.5 after:bg-primary">
-                        Liens rapides
-                    </h3>
-                    <ul class="space-y-2">
-                        <li><a href="{{ url('/') }}" class="text-gray-300 hover:text-white transition">Accueil</a></li>
-                        <li><a href="{{ url('all-items') }}" class="text-gray-300 hover:text-white transition">Objets perdus/trouvés</a></li>
-                        <li><a href="{{ url('add-item') }}" class="text-gray-300 hover:text-white transition">Déclarer un objet</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Comment ça marche ?</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">FAQ</a></li>
+                    <p class="text-xs font-bold uppercase tracking-[1px] text-slate-400 mb-4">Plateforme</p>
+                    <ul class="list-none flex flex-col gap-2.5">
+                        <li><a href="{{ url('/all-items') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Explorer les annonces</a></li>
+                        <li><a href="{{ url('add-item') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Signaler une perte</a></li>
+                        <li><a href="{{ url('add-found-item') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Signaler une trouvaille</a></li>
+                        <li><a href="{{ url('/all-items?category=Personnes') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Personnes disparues</a></li>
                     </ul>
                 </div>
-                
-                <!-- Colonne 3 - Catégories -->
+
                 <div>
-                    <h3 class="text-lg font-semibold mb-4 relative pb-2 after:absolute after:left-0 after:bottom-0 after:w-10 after:h-0.5 after:bg-primary">
-                        Catégories
-                    </h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Portefeuilles</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Téléphones</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Clés</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Documents</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Animaux</a></li>
+                    <p class="text-xs font-bold uppercase tracking-[1px] text-slate-400 mb-4">Aide</p>
+                    <ul class="list-none flex flex-col gap-2.5">
+                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Comment ça marche</a></li>
+                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">FAQ</a></li>
+                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions d'utilisation</a></li>
                     </ul>
                 </div>
-                
-                <!-- Colonne 4 - Contact -->
+
                 <div>
-                    <h3 class="text-lg font-semibold mb-4 relative pb-2 after:absolute after:left-0 after:bottom-0 after:w-10 after:h-0.5 after:bg-primary">
-                        Contact
-                    </h3>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-2 text-gray-300"></i>
-                            <span class="text-gray-300">Abidjan, Côte d'Ivoire</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone mt-1 mr-2 text-gray-300"></i>
-                            <span class="text-gray-300">+225 XX XX XX XX</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-2 text-gray-300"></i>
-                            <span class="text-gray-300">contact@qct.ci</span>
-                        </li>
+                    <p class="text-xs font-bold uppercase tracking-[1px] text-slate-400 mb-4">Contact</p>
+                    <ul class="list-none flex flex-col gap-2.5">
+                        <li><a href="mailto:contact@qct.ci" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-envelope mr-1"></i> contact@qct.ci</a></li>
+                        <li><a href="tel:+2250700000000" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-phone mr-1"></i> +225 07 00 00 00 00</a></li>
+                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-map-marker-alt mr-1"></i> Plateau, Abidjan</a></li>
                     </ul>
                 </div>
+
             </div>
-            
-            <!-- Copyright -->
-            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
-                &copy; {{ date('Y') }} QCT. Tous droits réservés.
+
+            <div class="border-t border-slate-700 pt-6 flex items-center justify-between flex-wrap gap-3">
+                <p class="text-[13px] text-slate-400">&copy; {{ date('Y') }} QCT — Tous droits réservés.</p>
+                <div class="flex gap-2">
+                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-whatsapp"></i></a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    
-    @yield('scripts')
+    <script>
+        // ── Gestion du dropdown utilisateur au clic ──
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userDropdown');
+            const arrow = document.getElementById('dropdownArrow');
+            
+            dropdown.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+
+        // Fermer le dropdown quand on clique ailleurs
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            const arrow = document.getElementById('dropdownArrow');
+            
+            if (!dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+                arrow.classList.remove('rotate-180');
+            }
+        });
+
+        // Empêcher la fermeture quand on clique dans le dropdown
+        document.getElementById('userDropdown').addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // ── Gestion du menu mobile ──
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('hidden');
+            navLinks.classList.toggle('flex');
+            navLinks.classList.toggle('flex-col');
+            navLinks.classList.toggle('absolute');
+            navLinks.classList.toggle('top-16');
+            navLinks.classList.toggle('left-0');
+            navLinks.classList.toggle('right-0');
+            navLinks.classList.toggle('bg-slate-900');
+            navLinks.classList.toggle('border-b');
+            navLinks.classList.toggle('border-slate-700');
+            navLinks.classList.toggle('p-3');
+            navLinks.classList.toggle('gap-1');
+        }
+    </script>
+
+    {{-- <script src="https://cdn.cinetpay.com/seamless/main.js"></script> --}}
 </body>
 </html>

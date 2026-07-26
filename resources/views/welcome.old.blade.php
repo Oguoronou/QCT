@@ -124,7 +124,7 @@
     </div>
     <div class="row">
       <div class="col-12 text-center">
-        <a href="{{ url('/all-items?category=personne') }}" class="btn btn-success">Voir plus</a>
+        <a href="{{ url('/all-items?category=Personnes') }}" class="btn btn-success">Voir plus</a>
       </div>
     </div>
   </div>

@@ -17,20 +17,62 @@ class Item extends Model
         'item_name',
         'category_name',
         'date',
-        'images',
+        'images',  // Utilisé dans le code
         'description',
         'status',
         'lost_found_status',
     ];
 
+    /**
+     * Les statuts possibles
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Relation avec le propriétaire de l'objet
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id", "id");
+    }
+
+    /**
+     * Relation avec le propriétaire (legacy name)
+     */
     public function users()
     {
-        return $this->belongsTo("App\Models\User", "user_id", "id");
+        return $this->belongsTo(User::class, "user_id", "id");
     }
-    // Dans app/Models/Item.php
 
+    /**
+     * Relation avec l'utilisateur qui a trouvé l'objet
+     */
     public function foundUser()
     {
         return $this->belongsTo(User::class, 'found_user_id');
     }
+
+    /**
+     * Obtenir le tableau des images
+     */
+    public function getImagesArray()
+    {
+        if (!$this->images) {
+            return [];
+        }
+        return explode(',', $this->images);
+    }
+
+    /**
+     * Obtenir la première image
+     */
+    public function getFirstImage()
+    {
+        $images = $this->getImagesArray();
+        return $images[0] ?? asset('placeholder.jpg');
+    }
 }
+
