@@ -68,10 +68,6 @@ Route::post('/validate-claim/{id}', [App\Http\Controllers\User\ItemController::c
 Route::post('/claim-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'claimOwnership'])->name('claim-ownership');
 Route::post('/validate-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'validateOwnership'])->name('validate-ownership');
 Route::post("contact-us", [App\Http\Controllers\MessageController::class, "message"]);
-Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
-Route::post("admin/delete-message/{id}", [App\Http\Controllers\MessageController::class, "deleteMessage"]);
-Route::post("admin/mark-as-reply/{id}", [App\Http\Controllers\MessageController::class, "replyMessage"]);
-Route::post("admin/mark-as-pending/{id}", [App\Http\Controllers\MessageController::class, "pendingMessage"]);
 
 
 Route::middleware(['AdminLogin'])->group(function () {
@@ -93,6 +89,11 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::get("admin/item-detail/{id}", [App\Http\Controllers\Admin\LostFoundController::class, "itemDetail"]);
 
     Route::get("admin/users", [App\Http\Controllers\Admin\UserController::class, "index"]);
+
+    Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
+    Route::post("admin/delete-message/{id}", [App\Http\Controllers\MessageController::class, "deleteMessage"]);
+    Route::post("admin/mark-as-reply/{id}", [App\Http\Controllers\MessageController::class, "replyMessage"]);
+    Route::post("admin/mark-as-pending/{id}", [App\Http\Controllers\MessageController::class, "pendingMessage"]);
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
