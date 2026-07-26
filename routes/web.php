@@ -45,8 +45,8 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get("register", [App\Http\Controllers\User\RegisterController::class, "create"])->name('register');
-Route::post("register", [App\Http\Controllers\User\RegisterController::class, "register"]);
-Route::post("login", [App\Http\Controllers\User\RegisterController::class, "login"]);
+Route::post("register", [App\Http\Controllers\User\RegisterController::class, "register"])->middleware('throttle.custom:10,1');
+Route::post("login", [App\Http\Controllers\User\RegisterController::class, "login"])->middleware('throttle.custom:10,1');
 Route::get("logout", [App\Http\Controllers\User\RegisterController::class, "logout"])->name('logout');
 
 Route::get("my-account", [App\Http\Controllers\User\ProfileController::class, "myAccount"]);
@@ -67,7 +67,7 @@ Route::post('/claim-item/{id}', [App\Http\Controllers\User\ItemController::class
 Route::post('/validate-claim/{id}', [App\Http\Controllers\User\ItemController::class, 'validateClaim'])->name('validate-claim');
 Route::post('/claim-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'claimOwnership'])->name('claim-ownership');
 Route::post('/validate-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'validateOwnership'])->name('validate-ownership');
-Route::post("contact-us", [App\Http\Controllers\MessageController::class, "message"]);
+Route::post("contact-us", [App\Http\Controllers\MessageController::class, "message"])->middleware('throttle.custom:10,1');
 
 
 Route::middleware(['AdminLogin'])->group(function () {
