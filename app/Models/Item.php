@@ -48,6 +48,14 @@ class Item extends Model
     }
 
     /**
+     * Déclaration de dépôt au commissariat, le cas échéant
+     */
+    public function policeDeclaration()
+    {
+        return $this->hasOne(ItemPoliceDeclaration::class);
+    }
+
+    /**
      * Obtenir le tableau des images
      */
     public function getImagesArray()
