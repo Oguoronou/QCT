@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Item;
+use App\Models\ItemPoliceDeclaration;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
@@ -17,6 +18,7 @@ class ItemController extends Controller
 {
     // Constantes pour les dossiers de stockage
     const ITEM_IMAGES_FOLDER = 'uploads/items';
+    const DECLARATION_PHOTOS_FOLDER = 'uploads/declarations';
 
     public function __construct()
     {
@@ -29,6 +31,35 @@ class ItemController extends Controller
     private function authorizeItem(Item $item): bool
     {
         return $item->user_id === Auth::id();
+    }
+
+    /**
+     * Crée ou met à jour la déclaration de dépôt au commissariat pour un item.
+     * Ne touche pas declared_at lors d'une correction ultérieure.
+     */
+    private function upsertPoliceDeclaration(Item $item, Request $request): void
+    {
+        $declaration = ItemPoliceDeclaration::firstOrNew(['item_id' => $item->id]);
+        $declaration->commissariat_id = $request->commissariat_id;
+        $declaration->declared_by_user_id = Auth::id();
+        $declaration->declaration_number = $request->declaration_number;
+
+        if ($request->hasFile('receipt_photo')) {
+            if ($declaration->receipt_photo && file_exists(public_path($declaration->receipt_photo))) {
+                unlink(public_path($declaration->receipt_photo));
+            }
+
+            $photo = $request->file('receipt_photo');
+            $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
+            $photo->move(public_path(self::DECLARATION_PHOTOS_FOLDER), $filename);
+            $declaration->receipt_photo = self::DECLARATION_PHOTOS_FOLDER . '/' . $filename;
+        }
+
+        if (!$declaration->exists) {
+            $declaration->declared_at = now();
+        }
+
+        $declaration->save();
     }
 
     public function index()
@@ -255,14 +286,24 @@ class ItemController extends Controller
         }
     }
 
-    public function itemFound($id)
+    public function itemFound(Request $request, $id)
     {
         try {
             $item = Item::findOrFail($id);
-            
+
             if (!$this->authorizeItem($item)) {
                 Session::flash("error", "Vous n'êtes pas autorisé à modifier cet objet.");
                 return redirect()->back();
+            }
+
+            if ($item->status === 'found') {
+                $request->validate([
+                    'commissariat_id' => 'required|exists:commissariats,id',
+                    'declaration_number' => 'required|string|max:100',
+                    'receipt_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                ]);
+
+                $this->upsertPoliceDeclaration($item, $request);
             }
 
             $item->update(['lost_found_status' => 'found']);

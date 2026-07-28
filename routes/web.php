@@ -60,7 +60,7 @@ Route::get("item-detail/{id}", [App\Http\Controllers\User\ItemController::class,
 Route::get("edit-item/{id}", [App\Http\Controllers\User\ItemController::class, "itemEdit"]);
 Route::post("update-item", [App\Http\Controllers\User\ItemController::class, "updateItem"]);
 Route::post("delete-item/{id}", [App\Http\Controllers\User\ItemController::class, "itemDelete"]);
-Route::post("item-found/{id}", [App\Http\Controllers\User\ItemController::class, "itemFound"]);
+Route::post("item-found/{id}", [App\Http\Controllers\User\ItemController::class, "itemFound"])->name('item-found');
 Route::post("item-deliver/{id}", [App\Http\Controllers\User\ItemController::class, "itemDeliver"]);
 Route::get('all-items', [App\Http\Controllers\User\ItemController::class, 'allItems'])->name('all-items');
 Route::post('/claim-item/{id}', [App\Http\Controllers\User\ItemController::class, 'claimItem'])->name('claim-item');
