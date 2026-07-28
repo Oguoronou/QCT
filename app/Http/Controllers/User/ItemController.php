@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\Commissariat;
 use App\Models\Item;
 use App\Models\ItemPoliceDeclaration;
 use Illuminate\Http\Request;
@@ -161,8 +162,10 @@ class ItemController extends Controller
     public function itemDetail($id)
     {
         try {
-            $item = Item::with('user', 'foundUser')->findOrFail($id);
-            return view('item_detail', compact('item'));
+            $item = Item::with('user', 'foundUser', 'policeDeclaration.commissariat')->findOrFail($id);
+            $commissariats = Commissariat::where('is_active', true)->orderBy('commune')->get();
+
+            return view('item_detail', compact('item', 'commissariats'));
         } catch (\Exception $e) {
             Session::flash("error", "Objet introuvable.");
             return redirect()->back();
