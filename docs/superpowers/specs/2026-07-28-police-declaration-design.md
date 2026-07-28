@@ -33,7 +33,7 @@ Ce projet est le premier des trois sous-systèmes identifiés pour rendre la pla
 
 ## 3. Flux & intégration UI
 
-**Déclencheur** : `resources/views/my_items.blade.php` affiche un bouton "Marquer comme déposé" sur les items où `status === 'found' && lost_found_status === 'pending'` (aujourd'hui aucun bouton n'existe pour cette transition). Le clic ouvre une petite section/modal avec :
+**Déclencheur** : `resources/views/item_detail.blade.php` a déjà une section "Actions" avec des formulaires conditionnels selon `lost_found_status` (`validate-claim`, `validate-ownership`...) — c'est l'emplacement établi pour ce genre de transition d'état par le propriétaire de l'item, donc le formulaire de déclaration y prend place plutôt que sur `my_items.blade.php` (dont la liste n'a aucun précédent de ce genre ; son lien "Voir détails" existant y mène déjà). Un bloc "Déclaration au commissariat" s'affiche pour les items où `status === 'found' && lost_found_status === 'pending'` et où l'utilisateur connecté est le trouveur (`Auth::id() === item->user_id`), avec :
 - `<select>` des commissariats `is_active = true` (obligatoire),
 - champ texte `declaration_number` (obligatoire),
 - upload `receipt_photo` (optionnel, image, max 2 Mo — mêmes contraintes que les photos d'objet).
