@@ -88,6 +88,13 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::get("admin/lost-and-found", [App\Http\Controllers\Admin\LostFoundController::class, "index"]);
     Route::get("admin/item-detail/{id}", [App\Http\Controllers\Admin\LostFoundController::class, "itemDetail"]);
 
+    Route::get("admin/commissariats", [App\Http\Controllers\Admin\CommissariatController::class, "index"]);
+    Route::get("admin/add-commissariat", [App\Http\Controllers\Admin\CommissariatController::class, "create"]);
+    Route::post("admin/save-commissariat", [App\Http\Controllers\Admin\CommissariatController::class, "store"]);
+    Route::get("admin/edit-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "edit"]);
+    Route::post("admin/update-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "update"]);
+    Route::post("admin/toggle-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "toggleActive"]);
+
     Route::get("admin/users", [App\Http\Controllers\Admin\UserController::class, "index"]);
 
     Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
