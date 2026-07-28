@@ -182,6 +182,38 @@
                         <img src="{{ asset('images/'.$item->image) }}" alt="Image de l'objet" class="max-w-full h-auto rounded-lg shadow-sm max-h-96">
                     </div>
                 </div>
+
+                <!-- Déclaration au commissariat -->
+                @if($item->policeDeclaration)
+                <div class="mt-8">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-shield-alt mr-2 text-blue-600"></i>
+                        Déclaration au commissariat
+                    </h4>
+                    <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-sm font-medium text-gray-500">Commissariat:</div>
+                            <div class="col-span-2 text-sm text-gray-800">{{ $item->policeDeclaration->commissariat->name }} ({{ $item->policeDeclaration->commissariat->commune }})</div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-sm font-medium text-gray-500">N° de déclaration:</div>
+                            <div class="col-span-2 text-sm text-gray-800">{{ $item->policeDeclaration->declaration_number }}</div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-sm font-medium text-gray-500">Déclaré le:</div>
+                            <div class="col-span-2 text-sm text-gray-800">{{ $item->policeDeclaration->declared_at->format('d/m/Y à H:i') }}</div>
+                        </div>
+                        @if($item->policeDeclaration->receipt_photo)
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-sm font-medium text-gray-500">Récépissé:</div>
+                            <div class="col-span-2 text-sm">
+                                <img src="{{ asset($item->policeDeclaration->receipt_photo) }}" class="w-32 h-32 object-cover rounded-lg border" alt="Récépissé">
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
