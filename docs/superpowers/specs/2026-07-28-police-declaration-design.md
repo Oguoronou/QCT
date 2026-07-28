@@ -55,7 +55,7 @@ sinon (status === 'lost'):
 
 **Affichage** (`item_detail.blade.php`, et son équivalent `Admin/LostFound/detail.blade.php`) :
 - Nom + commune du commissariat : **visible publiquement** dès qu'une déclaration existe (utile pour que le futur réclamant sache où aller).
-- `declaration_number` + `receipt_photo` : **visibles uniquement** si `Auth::id()` est le déclarant, ou si `Auth::id() === $item->found_user_id` **et** `lost_found_status` ∈ `{ownership_claimed, returned}` (le réclamant ne voit ces détails privés qu'une fois sa réclamation validée), ou côté Admin (accès systématique, cohérent avec le rôle d'audit décrit ci-dessous).
+- `declaration_number` + `receipt_photo` : **visibles uniquement** si `Auth::id()` est le déclarant, ou si `Auth::id() === $item->found_user_id` **et** `lost_found_status === 'returned'` (le réclamant ne voit ces détails privés qu'une fois sa réclamation validée par `validateOwnership`, pas dès `ownership_claimed`), ou côté Admin (accès systématique, cohérent avec le rôle d'audit décrit ci-dessous).
 
 ## 4. Audit Admin
 
