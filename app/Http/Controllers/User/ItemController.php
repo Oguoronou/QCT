@@ -281,6 +281,16 @@ class ItemController extends Controller
                 'images' => implode(',', $imagePaths),
             ]);
 
+            if ($item->policeDeclaration && $request->filled('commissariat_id')) {
+                $request->validate([
+                    'commissariat_id' => 'required|exists:commissariats,id',
+                    'declaration_number' => 'required|string|max:100',
+                    'receipt_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                ]);
+
+                $this->upsertPoliceDeclaration($item, $request);
+            }
+
             Session::flash("message", "Objet mis à jour avec succès !");
             return redirect("my-items");
         } catch (\Exception $e) {

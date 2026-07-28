@@ -156,6 +156,45 @@
                     </div>
                     @endif
 
+                    @if($item->policeDeclaration)
+                    @php
+                        $editCommissariats = \App\Models\Commissariat::where('is_active', true)->orWhere('id', $item->policeDeclaration->commissariat_id)->orderBy('commune')->get();
+                    @endphp
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-50 mb-6 pb-3 border-b border-slate-700 flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-blue-500"></i>
+                            Déclaration au commissariat
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-1.5">
+                                <label for="commissariat_id" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Commissariat *</label>
+                                <select id="commissariat_id" name="commissariat_id" required
+                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-50 outline-none transition-all focus:border-blue-500">
+                                    @foreach($editCommissariats as $commissariat)
+                                        <option value="{{ $commissariat->id }}" {{ old('commissariat_id', $item->policeDeclaration->commissariat_id) == $commissariat->id ? 'selected' : '' }}>
+                                            {{ $commissariat->name }} ({{ $commissariat->commune }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label for="declaration_number" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">N° de déclaration *</label>
+                                <input type="text" id="declaration_number" name="declaration_number" required
+                                       value="{{ old('declaration_number', $item->policeDeclaration->declaration_number) }}"
+                                       class="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-50 outline-none transition-all focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5 mt-6">
+                            <label for="receipt_photo" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Photo du récépissé (optionnel)</label>
+                            <input type="file" id="receipt_photo" name="receipt_photo" accept="image/*"
+                                   class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600">
+                            @if($item->policeDeclaration->receipt_photo)
+                                <p class="text-xs text-slate-500 mt-1">Laissez vide pour conserver le récépissé actuel</p>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+
                     <!-- Description -->
                     <div class="flex flex-col gap-1.5">
                         <label for="description" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Description *</label>
