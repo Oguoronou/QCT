@@ -193,6 +193,77 @@
                     @endif
                 </div>
 
+                <!-- Déclaration au commissariat -->
+                @if($item->status == 'found')
+                @php
+                    $isFinder = Auth::id() == $item->user_id;
+                    $isValidatedClaimant = Auth::id() == $item->found_user_id && $item->lost_found_status == 'returned';
+                    $canSeePrivateDeclaration = $isFinder || $isValidatedClaimant;
+                @endphp
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-slate-50 mb-4 pb-3 border-b border-slate-700 flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-blue-500"></i>
+                        Déclaration au commissariat
+                    </h3>
+
+                    @if($item->policeDeclaration)
+                        <div class="bg-slate-900 border border-slate-700 p-5 rounded-xl space-y-3">
+                            <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
+                                <span class="text-sm text-slate-400">Commissariat</span>
+                                <span class="text-sm text-slate-50 font-semibold">{{ $item->policeDeclaration->commissariat->name }} ({{ $item->policeDeclaration->commissariat->commune }})</span>
+                            </div>
+                            @if($canSeePrivateDeclaration)
+                                <div class="flex items-center justify-between py-2 border-b border-slate-700/50">
+                                    <span class="text-sm text-slate-400">N° de déclaration</span>
+                                    <span class="text-sm text-slate-50 font-mono">{{ $item->policeDeclaration->declaration_number }}</span>
+                                </div>
+                                @if($item->policeDeclaration->receipt_photo)
+                                    <div class="pt-2">
+                                        <span class="text-sm text-slate-400 block mb-2">Récépissé</span>
+                                        <img src="{{ asset($item->policeDeclaration->receipt_photo) }}"
+                                             class="w-40 h-40 object-cover rounded-lg border border-slate-700 cursor-pointer"
+                                             onclick="openImage('{{ asset($item->policeDeclaration->receipt_photo) }}')"
+                                             alt="Récépissé de dépôt">
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+                    @elseif($isFinder && $item->lost_found_status == 'pending')
+                        <form action="{{ route('item-found', $item->id) }}" method="POST" enctype="multipart/form-data"
+                              class="bg-slate-900 border border-slate-700 p-5 rounded-xl space-y-4">
+                            @csrf
+                            <p class="text-sm text-slate-400">Indiquez où vous avez déposé cet objet pour respecter l'obligation de signalement à la police.</p>
+                            <div class="flex flex-col gap-1.5">
+                                <label for="commissariat_id" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Commissariat *</label>
+                                <select id="commissariat_id" name="commissariat_id" required
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-50 outline-none focus:border-blue-500">
+                                    <option value="" disabled selected>Sélectionnez un commissariat</option>
+                                    @foreach($commissariats as $commissariat)
+                                        <option value="{{ $commissariat->id }}">{{ $commissariat->name }} ({{ $commissariat->commune }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label for="declaration_number" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">N° de déclaration *</label>
+                                <input type="text" id="declaration_number" name="declaration_number" required
+                                       class="w-full bg-slate-800 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-50 outline-none focus:border-blue-500"
+                                       placeholder="Ex: DEC-2026-00123">
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label for="receipt_photo" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Photo du récépissé (optionnel)</label>
+                                <input type="file" id="receipt_photo" name="receipt_photo" accept="image/*"
+                                       class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600">
+                            </div>
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 flex items-center justify-center gap-2">
+                                <i class="fas fa-shield-alt"></i>
+                                Marquer comme déposé
+                            </button>
+                        </form>
+                    @endif
+                </div>
+                @endif
+
                 <!-- Actions -->
                 <div class="mt-8">
                     <h3 class="text-lg font-semibold text-slate-50 mb-4 pb-3 border-b border-slate-700 flex items-center gap-2">

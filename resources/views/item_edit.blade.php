@@ -114,19 +114,23 @@
                         </div>
                         
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Nouvelles images</label>
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Nouvelles images</label>
+                                <span id="images-counter" class="text-xs text-slate-500 hidden">0/5</span>
+                            </div>
                             <label for="newImages" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-600 rounded-lg cursor-pointer bg-slate-900/50 hover:bg-slate-900 hover:border-blue-500 transition-all group">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                     <i class="fas fa-cloud-upload-alt text-2xl text-slate-500 group-hover:text-blue-500 mb-3 transition-colors"></i>
                                     <p class="text-sm text-slate-400">
-                                        <span class="font-semibold">Cliquez pour uploader</span>
+                                        <span class="font-semibold">Cliquez pour uploader</span> jusqu'à 5 photos
                                     </p>
-                                    <p class="text-xs text-slate-500 mt-1">PNG, JPG, WebP (max 2 Mo)</p>
+                                    <p class="text-xs text-slate-500 mt-1">PNG, JPG, WebP (max 2 Mo par image)</p>
                                 </div>
                                 <input type="file" id="newImages" name="images[]" class="hidden" accept="image/*" multiple>
                             </label>
                             <p class="text-xs text-slate-500 mt-1">Laissez vide pour conserver les images actuelles</p>
-                            <p id="newFilesList" class="text-xs text-blue-400 mt-1 hidden"></p>
+                            <p id="images-error" class="text-xs text-red-400 mt-1 hidden">5 images maximum.</p>
+                            <div id="image-previews" class="flex flex-wrap gap-2 mt-2"></div>
                         </div>
                     </div>
 
@@ -152,6 +156,45 @@
                                 </div>
                             </div>
                             @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($item->policeDeclaration)
+                    @php
+                        $editCommissariats = \App\Models\Commissariat::where('is_active', true)->orWhere('id', $item->policeDeclaration->commissariat_id)->orderBy('commune')->get();
+                    @endphp
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-50 mb-6 pb-3 border-b border-slate-700 flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-blue-500"></i>
+                            Déclaration au commissariat
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-1.5">
+                                <label for="commissariat_id" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Commissariat *</label>
+                                <select id="commissariat_id" name="commissariat_id" required
+                                        class="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-50 outline-none transition-all focus:border-blue-500">
+                                    @foreach($editCommissariats as $commissariat)
+                                        <option value="{{ $commissariat->id }}" {{ old('commissariat_id', $item->policeDeclaration->commissariat_id) == $commissariat->id ? 'selected' : '' }}>
+                                            {{ $commissariat->name }} ({{ $commissariat->commune }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label for="declaration_number" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">N° de déclaration *</label>
+                                <input type="text" id="declaration_number" name="declaration_number" required
+                                       value="{{ old('declaration_number', $item->policeDeclaration->declaration_number) }}"
+                                       class="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-50 outline-none transition-all focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5 mt-6">
+                            <label for="receipt_photo" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Photo du récépissé (optionnel)</label>
+                            <input type="file" id="receipt_photo" name="receipt_photo" accept="image/*"
+                                   class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600">
+                            @if($item->policeDeclaration->receipt_photo)
+                                <p class="text-xs text-slate-500 mt-1">Laissez vide pour conserver le récépissé actuel</p>
+                            @endif
                         </div>
                     </div>
                     @endif
@@ -192,18 +235,72 @@
 </div>
 
 <script>
-    // Afficher les noms des nouveaux fichiers sélectionnés
-    document.getElementById('newImages').addEventListener('change', function(e) {
-        const files = Array.from(e.target.files);
-        const filesList = document.getElementById('newFilesList');
-        
-        if (files.length > 0) {
-            filesList.textContent = '📎 ' + files.map(f => f.name).join(', ');
-            filesList.classList.remove('hidden');
-        } else {
-            filesList.classList.add('hidden');
+    // Sélection multiple des nouvelles images (miniatures + limite de 5)
+    (function () {
+        const MAX_IMAGES = 5;
+        const imagesInput = document.getElementById('newImages');
+        const previewsContainer = document.getElementById('image-previews');
+        const imagesError = document.getElementById('images-error');
+        const imagesCounter = document.getElementById('images-counter');
+        let selectedFiles = [];
+
+        function syncInputFiles() {
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            imagesInput.files = dataTransfer.files;
         }
-    });
+
+        function updateCounter() {
+            if (selectedFiles.length > 0) {
+                imagesCounter.textContent = selectedFiles.length + '/' + MAX_IMAGES;
+                imagesCounter.classList.remove('hidden');
+            } else {
+                imagesCounter.classList.add('hidden');
+            }
+        }
+
+        function renderPreviews() {
+            previewsContainer.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const url = URL.createObjectURL(file);
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative group';
+                wrapper.innerHTML = `
+                    <img src="${url}" class="w-16 h-16 object-cover rounded-lg border border-slate-700" alt="${file.name}">
+                    <button type="button" data-index="${index}" class="remove-image-btn absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                previewsContainer.appendChild(wrapper);
+            });
+
+            previewsContainer.querySelectorAll('.remove-image-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const index = parseInt(this.dataset.index, 10);
+                    selectedFiles.splice(index, 1);
+                    syncInputFiles();
+                    renderPreviews();
+                    updateCounter();
+                });
+            });
+        }
+
+        imagesInput.addEventListener('change', function (e) {
+            let combined = selectedFiles.concat(Array.from(e.target.files));
+
+            if (combined.length > MAX_IMAGES) {
+                combined = combined.slice(0, MAX_IMAGES);
+                imagesError.classList.remove('hidden');
+            } else {
+                imagesError.classList.add('hidden');
+            }
+
+            selectedFiles = combined;
+            syncInputFiles();
+            renderPreviews();
+            updateCounter();
+        });
+    })();
 
     // Modal image
     function openImage(src) {

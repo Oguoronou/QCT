@@ -1,0 +1,42 @@
+# Usage local uniquement (test avant déploiement Render) :
+#   docker compose up --build
+#   -> http://localhost:8080
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: findme
+      DB_USERNAME: findme
+      DB_PASSWORD: findme
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: findme
+      MYSQL_USER: findme
+      MYSQL_PASSWORD: findme
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - qct_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  qct_mysql_data:

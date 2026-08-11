@@ -132,6 +132,13 @@
           </a>
         </li>
 
+        <li>
+          <a href="{{ url('admin/commissariats') }}" class="flex items-center p-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded">
+            <i class="fas fa-shield-alt w-6 text-center"></i>
+            <span class="ml-3">Commissariats</span>
+          </a>
+        </li>
+
         @if(!empty(Auth::user()))
         <li class="pt-4 border-t mt-4">
           <a href="{{ url('logout') }}" class="flex items-center p-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded">
