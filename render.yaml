@@ -29,7 +29,7 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: "false"
       # Générez une clé avec `php artisan key:generate --show` en local
       # et collez la valeur (base64:...) dans le dashboard Render.
       - key: APP_KEY
@@ -52,7 +52,7 @@ services:
           name: qct-mysql
           property: host
       - key: DB_PORT
-        value: 3306
+        value: "3306"
       - key: DB_DATABASE
         value: findme
       - key: DB_USERNAME
@@ -74,7 +74,7 @@ services:
       - key: MAIL_HOST
         sync: false
       - key: MAIL_PORT
-        value: 587
+        value: "587"
       - key: MAIL_USERNAME
         sync: false
       - key: MAIL_PASSWORD
@@ -95,7 +95,8 @@ services:
 
   - type: pserv
     name: qct-mysql
-    runtime: docker
+    runtime: image
+    plan: starter
     image:
       url: docker.io/library/mysql:8
     disk:
