@@ -37,7 +37,7 @@ services:
       # A mettre à jour après le premier déploiement avec l'URL
       # https://qct-app.onrender.com attribuée par Render.
       - key: APP_URL
-        value: https://qct-app.onrender.com
+        value: https://qct.onrender.com
 
       - key: LOG_CHANNEL
         value: stack
