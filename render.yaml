@@ -1,0 +1,113 @@
+# Render Blueprint — voir https://render.com/docs/blueprint-spec
+#
+# IMPORTANT : Render ne propose PAS de base de données MySQL managée
+# (uniquement PostgreSQL). Le service "qct-mysql" ci-dessous est un
+# service privé qui fait tourner l'image MySQL officielle avec un disque
+# persistant : ça marche, mais sans sauvegardes automatiques ni haute
+# disponibilité. Pour un vrai usage en production, préférez un MySQL
+# managé externe (PlanetScale, Aiven, Railway...) et remplacez les
+# variables DB_HOST / DB_PORT / DB_USERNAME / DB_PASSWORD ci-dessous par
+# les identifiants fournis par ce service.
+#
+# Rappel stockage (voir CLAUDE.md) : le filesystem de Render est éphémère.
+# Les images d'items, photos de déclaration et photos de profil (écrites
+# via move() dans public/uploads/ et images/) seront perdues à chaque
+# redéploiement/redémarrage. Accepté pour l'instant — à corriger plus
+# tard avec un disque persistant Render ou un stockage S3-compatible.
+
+services:
+  - type: web
+    name: qct-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      - key: APP_NAME
+        value: QCT
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      # Générez une clé avec `php artisan key:generate --show` en local
+      # et collez la valeur (base64:...) dans le dashboard Render.
+      - key: APP_KEY
+        sync: false
+      # A mettre à jour après le premier déploiement avec l'URL
+      # https://qct-app.onrender.com attribuée par Render.
+      - key: APP_URL
+        value: https://qct-app.onrender.com
+
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error
+
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: qct-mysql
+          property: host
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: findme
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: local
+
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_ENCRYPTION
+        value: tls
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: QCT
+
+      - key: CINETPAY_API_KEY
+        sync: false
+      - key: CINETPAY_SITE_ID
+        sync: false
+      - key: CINETPAY_SECRET_KEY
+        sync: false
+
+  - type: pserv
+    name: qct-mysql
+    runtime: docker
+    image:
+      url: docker.io/library/mysql:8
+    disk:
+      name: qct-mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 1
+    envVars:
+      - key: MYSQL_DATABASE
+        value: findme
+      - key: MYSQL_USER
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: MYSQL_ROOT_PASSWORD
+        sync: false

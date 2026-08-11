@@ -128,16 +128,20 @@
                         </div>
 
                         <div class="flex flex-col gap-1.5">
-                            <label for="images" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Photo de l'objet *</label>
+                            <div class="flex items-center justify-between">
+                                <label for="images" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Photos de l'objet *</label>
+                                <span id="images-counter" class="text-xs text-slate-500 hidden">0/5</span>
+                            </div>
                             <label for="images" id="upload-zone" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-600 rounded-lg cursor-pointer bg-slate-900/50 hover:bg-slate-900 transition-all group {{ $current['uploadZoneHover'] }}">
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                     <i id="upload-icon" class="fas fa-cloud-upload-alt text-2xl text-slate-500 mb-3 transition-colors {{ $current['uploadIconHover'] }}"></i>
-                                    <p class="text-sm text-slate-400">Cliquez pour uploader une photo</p>
-                                    <p class="text-xs text-slate-500 mt-1">JPG, PNG ou WebP (max 2 Mo)</p>
+                                    <p class="text-sm text-slate-400">Cliquez pour uploader jusqu'à 5 photos</p>
+                                    <p class="text-xs text-slate-500 mt-1">JPG, PNG ou WebP (max 2 Mo par image)</p>
                                 </div>
-                                <input type="file" id="images" name="images[]" class="hidden" accept="image/*" required>
+                                <input type="file" id="images" name="images[]" class="hidden" accept="image/*" multiple required>
                             </label>
-                            <p id="file-name" class="text-xs text-slate-500 mt-1 hidden"></p>
+                            <p id="images-error" class="text-xs text-red-400 mt-1 hidden">5 images maximum.</p>
+                            <div id="image-previews" class="flex flex-wrap gap-2 mt-2"></div>
                         </div>
                     </div>
 
@@ -270,15 +274,68 @@
         });
     });
 
-    document.getElementById('images').addEventListener('change', function (e) {
-        const fileName = e.target.files[0]?.name;
-        const fileNameDisplay = document.getElementById('file-name');
-        if (fileName) {
-            fileNameDisplay.textContent = '📎 ' + fileName;
-            fileNameDisplay.classList.remove('hidden');
+    const MAX_IMAGES = 5;
+    const imagesInput = document.getElementById('images');
+    const previewsContainer = document.getElementById('image-previews');
+    const imagesError = document.getElementById('images-error');
+    const imagesCounter = document.getElementById('images-counter');
+    let selectedFiles = [];
+
+    function syncInputFiles() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        imagesInput.files = dataTransfer.files;
+    }
+
+    function updateCounter() {
+        if (selectedFiles.length > 0) {
+            imagesCounter.textContent = selectedFiles.length + '/' + MAX_IMAGES;
+            imagesCounter.classList.remove('hidden');
         } else {
-            fileNameDisplay.classList.add('hidden');
+            imagesCounter.classList.add('hidden');
         }
+    }
+
+    function renderPreviews() {
+        previewsContainer.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+            const url = URL.createObjectURL(file);
+            const wrapper = document.createElement('div');
+            wrapper.className = 'relative group';
+            wrapper.innerHTML = `
+                <img src="${url}" class="w-16 h-16 object-cover rounded-lg border border-slate-700" alt="${file.name}">
+                <button type="button" data-index="${index}" class="remove-image-btn absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            previewsContainer.appendChild(wrapper);
+        });
+
+        previewsContainer.querySelectorAll('.remove-image-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const index = parseInt(this.dataset.index, 10);
+                selectedFiles.splice(index, 1);
+                syncInputFiles();
+                renderPreviews();
+                updateCounter();
+            });
+        });
+    }
+
+    imagesInput.addEventListener('change', function (e) {
+        let combined = selectedFiles.concat(Array.from(e.target.files));
+
+        if (combined.length > MAX_IMAGES) {
+            combined = combined.slice(0, MAX_IMAGES);
+            imagesError.classList.remove('hidden');
+        } else {
+            imagesError.classList.add('hidden');
+        }
+
+        selectedFiles = combined;
+        syncInputFiles();
+        renderPreviews();
+        updateCounter();
     });
 })();
 </script>

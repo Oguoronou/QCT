@@ -105,6 +105,7 @@ class ItemController extends Controller
                 'item_name' => 'required|string|max:255',
                 'category' => 'required|string|max:255',
                 'lost_date' => 'required|date',
+                'images' => 'array|max:5',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'description' => 'required|string',
                 'status' => 'required|in:lost,found',
@@ -240,6 +241,7 @@ class ItemController extends Controller
                 'category' => 'required|string|max:255',
                 'lost_date' => 'required|date',
                 'description' => 'required|string',
+                'images' => 'array|max:5',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
