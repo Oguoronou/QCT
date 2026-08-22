@@ -74,6 +74,7 @@ Route::post('/validate-claim/{id}', [App\Http\Controllers\User\ItemController::c
 Route::post('/claim-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'claimOwnership'])->name('claim-ownership');
 Route::post('/validate-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'validateOwnership'])->name('validate-ownership');
 Route::post("contact-us", [App\Http\Controllers\MessageController::class, "message"])->middleware('throttle.custom:10,1');
+Route::get('/page/{slug}', [App\Http\Controllers\PageController::class, 'show']);
 
 
 Route::middleware(['AdminLogin'])->group(function () {
