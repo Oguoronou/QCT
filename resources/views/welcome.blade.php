@@ -44,19 +44,19 @@
 
             <!-- Catégories rapides -->
             <div class="flex flex-wrap gap-2">
-                <a href="{{ url('/all-items?category=documents') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                <a href="{{ url('/all-items?category=Documents') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
                     <i class="fas fa-id-card"></i> Documents
                 </a>
-                <a href="{{ url('/all-items?category=electronics') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                <a href="{{ url('/all-items?category=Téléphones') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
                     <i class="fas fa-mobile-alt"></i> Téléphones
                 </a>
-                <a href="{{ url('/all-items?category=keys') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                <a href="{{ url('/all-items?category=Clés') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
                     <i class="fas fa-key"></i> Clés
                 </a>
-                <a href="{{ url('/all-items?category=wallet') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                <a href="{{ url('/all-items?category=Portefeuilles') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
                     <i class="fas fa-wallet"></i> Portefeuilles
                 </a>
-                <a href="{{ url('/all-items?category=animal') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
+                <a href="{{ url('/all-items?category=Animaux') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-slate-400 bg-white/5 border border-slate-700 no-underline transition-all hover:text-slate-50 hover:border-blue-500 hover:bg-blue-500/10">
                     <i class="fas fa-paw"></i> Animaux
                 </a>
                 <a href="{{ url('/all-items?category=Personnes') }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-amber-400 border border-amber-500/30 bg-amber-500/8 no-underline transition-all hover:border-amber-500 hover:bg-amber-500/15">
@@ -84,26 +84,56 @@
 {{-- ════════════════════════════════════════
     STATS BAR
 ════════════════════════════════════════ --}}
-<div class="bg-slate-800 border-y border-slate-700 py-5 px-6">
-    <div class="container mx-auto px-6 flex items-center justify-center flex-wrap gap-6">
-        <div class="flex flex-col items-center">
-            <span class="text-[22px] font-extrabold text-blue-500 tracking-[-0.5px]">142K+</span>
-            <span class="text-xs text-slate-400 mt-0.5">Retrouvailles</span>
+<div class="relative bg-slate-800 border-y border-slate-700 py-10 px-6 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-emerald-500/5 pointer-events-none"></div>
+    <div class="container relative mx-auto px-6">
+        <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+            <div class="group flex flex-col gap-3 bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all hover:border-emerald-500 hover:-translate-y-1">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-base transition-transform group-hover:scale-110">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <span class="text-[26px] font-extrabold text-slate-50 tracking-[-0.5px] leading-none">{{ $stats['resolved_total'] }}</span>
+                <span class="text-xs text-slate-400 leading-snug">Retrouvailles réussies</span>
+            </div>
+            <div class="group flex flex-col gap-3 bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all hover:border-blue-500 hover:-translate-y-1">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-base transition-transform group-hover:scale-110">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <span class="text-[26px] font-extrabold text-slate-50 tracking-[-0.5px] leading-none">{{ $stats['objects_resolved'] }}</span>
+                <span class="text-xs text-slate-400 leading-snug">Objets rendus</span>
+            </div>
+            <div class="group flex flex-col gap-3 bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all hover:border-amber-500 hover:-translate-y-1">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-base transition-transform group-hover:scale-110">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <span class="text-[26px] font-extrabold text-slate-50 tracking-[-0.5px] leading-none">{{ $stats['persons_found'] }}</span>
+                <span class="text-xs text-slate-400 leading-snug">Personnes retrouvées</span>
+            </div>
+            <div class="group flex flex-col gap-3 bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all hover:border-blue-500 hover:-translate-y-1">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-base transition-transform group-hover:scale-110">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <span class="text-[26px] font-extrabold text-slate-50 tracking-[-0.5px] leading-none">{{ $stats['active_listings'] }}</span>
+                <span class="text-xs text-slate-400 leading-snug">Annonces actives</span>
+            </div>
+            <div class="group flex flex-col gap-3 bg-slate-900 border border-slate-700 rounded-2xl p-5 transition-all hover:border-emerald-500 hover:-translate-y-1">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-base transition-transform group-hover:scale-110">
+                    <i class="fas fa-users"></i>
+                </div>
+                <span class="text-[26px] font-extrabold text-slate-50 tracking-[-0.5px] leading-none">{{ $stats['members'] }}</span>
+                <span class="text-xs text-slate-400 leading-snug">Membres inscrits</span>
+            </div>
         </div>
-        <div class="w-px h-9 bg-slate-700 max-sm:hidden"></div>
-        <div class="flex flex-col items-center">
-            <span class="text-[22px] font-extrabold text-blue-500 tracking-[-0.5px]">75K+</span>
-            <span class="text-xs text-slate-400 mt-0.5">Objets rendus</span>
-        </div>
-        <div class="w-px h-9 bg-slate-700 max-sm:hidden"></div>
-        <div class="flex flex-col items-center">
-            <span class="text-[22px] font-extrabold text-blue-500 tracking-[-0.5px]">1.2M+</span>
-            <span class="text-xs text-slate-400 mt-0.5">Membres</span>
-        </div>
-        <div class="w-px h-9 bg-slate-700 max-sm:hidden"></div>
-        <div class="flex flex-col items-center">
-            <span class="text-[22px] font-extrabold text-emerald-500 tracking-[-0.5px]">{{ $resolvedItems->count() }}</span>
-            <span class="text-xs text-slate-400 mt-0.5">Résolus ce mois</span>
+
+        <div class="flex items-center justify-center flex-wrap gap-x-8 gap-y-2 mt-6 pt-6 border-t border-slate-700 text-xs text-slate-400">
+            <span class="inline-flex items-center gap-2">
+                <i class="fas fa-chart-line text-emerald-500"></i>
+                Taux de réussite <strong class="text-slate-50">{{ $stats['success_rate'] }}%</strong>
+            </span>
+            <span class="inline-flex items-center gap-2">
+                <i class="fas fa-calendar-check text-blue-500"></i>
+                <strong class="text-slate-50">{{ $stats['resolved_this_month'] }}</strong> résolu(s) ce mois-ci
+            </span>
         </div>
     </div>
 </div>
@@ -180,18 +210,18 @@
         <!-- Filtres catégories -->
         <div class="flex overflow-x-auto gap-2 pb-1 mb-8 scrollbar-none" id="catTabs">
             <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white active bg-blue-500 border-blue-500 text-white" data-cat="all">Tous</button>
-            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="documents"><i class="fas fa-id-card mr-1"></i> Documents</button>
-            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="electronics"><i class="fas fa-mobile-alt mr-1"></i> Téléphones</button>
-            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="keys"><i class="fas fa-key mr-1"></i> Clés</button>
-            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="wallet"><i class="fas fa-wallet mr-1"></i> Portefeuilles</button>
-            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="animal"><i class="fas fa-paw mr-1"></i> Animaux</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="Documents"><i class="fas fa-id-card mr-1"></i> Documents</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="Téléphones"><i class="fas fa-mobile-alt mr-1"></i> Téléphones</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="Clés"><i class="fas fa-key mr-1"></i> Clés</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="Portefeuilles"><i class="fas fa-wallet mr-1"></i> Portefeuilles</button>
+            <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="Animaux"><i class="fas fa-paw mr-1"></i> Animaux</button>
         </div>
 
         <div class="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" id="itemsGrid">
             @foreach ($items as $item)
             <a href="{{ url('item-detail', $item->id) }}"
                class="item-card bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden no-underline flex flex-col transition-all hover:border-blue-500 hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(59,130,246,.15)]"
-               data-cat="{{ $item->category }}">
+               data-cat="{{ $item->category_name }}">
                 <div class="relative h-[120px] sm:h-[200px] overflow-hidden">
                     <img src="{{ asset(explode(',', $item->images)[0]) }}"
                          alt="{{ $item->item_name }}"
@@ -204,8 +234,8 @@
                 </div>
                 <div class="p-2.5 sm:p-4 flex-1 flex flex-col gap-1 sm:gap-1.5">
                     <div class="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[1px] text-blue-500 flex items-center gap-1.5">
-                        <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'mobile-alt' : ($item->category == 'keys' ? 'key' : 'box')) }}"></i>
-                        {{ ucfirst($item->category) }}
+                        <i class="fas fa-{{ $item->category_name == 'Documents' ? 'file-alt' : ($item->category_name == 'Téléphones' ? 'mobile-alt' : ($item->category_name == 'Clés' ? 'key' : 'box')) }}"></i>
+                        {{ $item->category_name }}
                     </div>
                     <h3 class="text-[13px] sm:text-[15px] font-bold text-slate-50">{{ $item->item_name }}</h3>
                     <p class="text-[11px] sm:text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($item->description, 80) }}</p>

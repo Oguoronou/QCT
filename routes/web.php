@@ -43,7 +43,27 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems, "testimonials" => $testimonials]);
+    $resolvedStatuses = ['found', 'delivered', 'ownership_claimed', 'returned'];
+
+    $totalItems = Item::count();
+    $objectsResolved = Item::where('category_name', '!=', 'Personnes')->whereIn('lost_found_status', $resolvedStatuses)->count();
+    $personsFound = Item::where('category_name', 'Personnes')->whereIn('lost_found_status', $resolvedStatuses)->count();
+    $resolvedTotal = $objectsResolved + $personsFound;
+
+    $stats = [
+        'resolved_total' => $resolvedTotal,
+        'objects_resolved' => $objectsResolved,
+        'persons_found' => $personsFound,
+        'active_listings' => Item::where('lost_found_status', 'pending')->count(),
+        'members' => User::count(),
+        'success_rate' => $totalItems > 0 ? round(($resolvedTotal / $totalItems) * 100) : 0,
+        'resolved_this_month' => Item::whereIn('lost_found_status', $resolvedStatuses)
+            ->whereMonth('updated_at', now()->month)
+            ->whereYear('updated_at', now()->year)
+            ->count(),
+    ];
+
+    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems, "testimonials" => $testimonials, "stats" => $stats]);
 });
 
 Route::get('/login', function () {
