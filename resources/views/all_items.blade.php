@@ -102,35 +102,36 @@
             </div>
             
             <!-- Liste des résultats -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            <div class="grid grid-cols-2 gap-3 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 p-3 sm:p-6">
                 @forelse ($items as $item)
                 <a href="{{ url('item-detail', $item->id) }}" class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-700 hover:border-blue-500 hover:-translate-y-1 transition-all shadow-[0_4px_24px_rgba(0,0,0,.35)] hover:shadow-[0_12px_32px_rgba(59,130,246,.15)] group no-underline">
                     <div class="relative">
-                        <img class="w-full h-64 object-cover transition-transform duration-400 group-hover:scale-[1.04]" 
-                             src="{{ asset(explode(',', $item->images)[0]) }}" 
+                        <img class="w-full h-28 sm:h-64 object-cover transition-transform duration-400 group-hover:scale-[1.04]"
+                             src="{{ asset(explode(',', $item->images)[0]) }}"
                              alt="{{ $item->item_name }}"
-                             loading="lazy">
-                        <span class="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {{ $item->status == 'lost' ? 'bg-red-500/90 text-white' : 'bg-emerald-500/90 text-white' }} backdrop-blur-sm shadow-lg">
+                             loading="lazy"
+                             onerror="imgFallback(this)">
+                        <span class="absolute top-2 right-2 sm:top-4 sm:right-4 inline-flex items-center gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold {{ $item->status == 'lost' ? 'bg-red-500/90 text-white' : 'bg-emerald-500/90 text-white' }} backdrop-blur-sm shadow-lg">
                             <i class="fas fa-{{ $item->status == 'lost' ? 'search' : 'check' }} text-[10px]"></i>
                             {{ $item->status == 'lost' ? 'Perdu' : 'Trouvé' }}
                         </span>
                     </div>
-                    <div class="p-6">
-                        <div class="flex items-center mb-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-500/15 flex items-center justify-center mr-3 shrink-0">
-                                <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'mobile-alt' : ($item->category == 'keys' ? 'key' : ($item->category == 'wallet' ? 'wallet' : 'box'))) }} text-blue-500 text-sm"></i>
+                    <div class="p-2.5 sm:p-6">
+                        <div class="flex items-center mb-2 sm:mb-3">
+                            <div class="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-blue-500/15 flex items-center justify-center mr-2 sm:mr-3 shrink-0">
+                                <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'mobile-alt' : ($item->category == 'keys' ? 'key' : ($item->category == 'wallet' ? 'wallet' : 'box'))) }} text-blue-500 text-xs sm:text-sm"></i>
                             </div>
                             <div class="min-w-0">
-                                <h5 class="font-bold text-lg text-slate-50 truncate">{{ $item->item_name }}</h5>
-                                <p class="text-xs text-slate-400">{{ ucfirst($item->category) }}</p>
+                                <h5 class="font-bold text-sm sm:text-lg text-slate-50 truncate">{{ $item->item_name }}</h5>
+                                <p class="text-[10px] sm:text-xs text-slate-400">{{ ucfirst($item->category) }}</p>
                             </div>
                         </div>
-                        <p class="text-slate-400 text-sm mb-4 line-clamp-3">{{ Str::limit($item->description, 100) }}</p>
-                        <div class="flex items-center justify-between pt-4 border-t border-slate-700">
-                            <span class="text-blue-400 font-semibold text-sm flex items-center gap-1.5">
-                                <i class="fas fa-eye"></i> Voir les détails
+                        <p class="text-slate-400 text-[11px] sm:text-sm mb-2 sm:mb-4 line-clamp-3">{{ Str::limit($item->description, 100) }}</p>
+                        <div class="flex items-center justify-between pt-2 sm:pt-4 border-t border-slate-700">
+                            <span class="text-blue-400 font-semibold text-[11px] sm:text-sm flex items-center gap-1.5">
+                                <i class="fas fa-eye"></i> <span class="hidden sm:inline">Voir les détails</span><span class="sm:hidden">Voir</span>
                             </span>
-                            <span class="text-slate-500 text-xs">
+                            <span class="text-slate-500 text-[10px] sm:text-xs">
                                 <i class="fas fa-clock mr-1"></i>
                                 {{ $item->created_at->diffForHumans(['locale' => 'fr']) }}
                             </span>

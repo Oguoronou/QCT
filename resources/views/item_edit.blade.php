@@ -144,9 +144,10 @@
                         <div class="flex flex-wrap gap-3">
                             @foreach($images as $image)
                             <div class="relative group">
-                                <img src="{{ asset($image) }}" 
+                                <img src="{{ asset($image) }}"
                                      class="w-24 h-24 object-cover rounded-xl border-2 border-slate-700 group-hover:border-blue-500 transition-colors"
-                                     alt="Image {{ $loop->iteration }}">
+                                     alt="Image {{ $loop->iteration }}"
+                                     onerror="imgFallback(this)">
                                 <span class="absolute -top-2 -right-2 bg-blue-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
                                     {{ $loop->iteration }}
                                 </span>

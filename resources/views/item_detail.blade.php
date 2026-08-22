@@ -176,10 +176,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                             @foreach($images as $image)
                                 <div class="overflow-hidden rounded-xl border border-slate-700 group cursor-pointer" onclick="openImage('{{ asset($image) }}')">
-                                    <img src="{{ asset($image) }}" 
-                                         class="w-full h-48 object-cover transition-transform duration-400 group-hover:scale-105" 
+                                    <img src="{{ asset($image) }}"
+                                         class="w-full h-48 object-cover transition-transform duration-400 group-hover:scale-105"
                                          alt="Image de l'objet"
-                                         loading="lazy">
+                                         loading="lazy"
+                                         onerror="imgFallback(this)">
                                 </div>
                             @endforeach
                         </div>

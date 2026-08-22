@@ -1,13 +1,26 @@
 # Render Blueprint — voir https://render.com/docs/blueprint-spec
 #
 # IMPORTANT : Render ne propose PAS de base de données MySQL managée
-# (uniquement PostgreSQL). Le service "qct-mysql" ci-dessous est un
-# service privé qui fait tourner l'image MySQL officielle avec un disque
-# persistant : ça marche, mais sans sauvegardes automatiques ni haute
-# disponibilité. Pour un vrai usage en production, préférez un MySQL
-# managé externe (PlanetScale, Aiven, Railway...) et remplacez les
-# variables DB_HOST / DB_PORT / DB_USERNAME / DB_PASSWORD ci-dessous par
-# les identifiants fournis par ce service.
+# (uniquement PostgreSQL), et un service privé (pserv) n'a pas de plan
+# free — donc pas de MySQL gratuit hébergé sur Render lui-même. La base
+# tourne sur Aiven (offre MySQL gratuite externe) :
+#   1. Crée un compte sur https://aiven.io et un service "MySQL" sur le
+#      plan gratuit.
+#   2. Dans l'onglet "Overview" du service Aiven, récupère : Host, Port,
+#      User, Password, et le nom de la base par défaut (souvent
+#      "defaultdb").
+#   3. Colle ces valeurs dans le dashboard Render, sur le service
+#      qct-app, pour les variables DB_HOST / DB_PORT / DB_DATABASE /
+#      DB_USERNAME / DB_PASSWORD marquées `sync: false` ci-dessous.
+#   4. Aiven force TLS. Ça passe en général sans configuration
+#      supplémentaire (chiffrement opportuniste). Si Laravel refuse la
+#      connexion pour une histoire de certificat, télécharge le
+#      ca.pem d'Aiven et référence-le via la variable d'env
+#      MYSQL_ATTR_SSL_CA (voir config/database.php, déjà câblé pour ça).
+#
+# Le plan `free` du service web Render s'endort après ~15 min sans
+# trafic et met 30-50s à se réveiller à la requête suivante — normal,
+# pas un bug.
 #
 # Rappel stockage (voir CLAUDE.md) : le filesystem de Render est éphémère.
 # Les images d'items, photos de déclaration et photos de profil (écrites
@@ -21,7 +34,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: starter
+    plan: free
     healthCheckPath: /
     envVars:
       - key: APP_NAME
@@ -46,15 +59,14 @@ services:
 
       - key: DB_CONNECTION
         value: mysql
+      # Les 5 variables suivantes viennent de l'onglet "Overview" de ton
+      # service MySQL sur Aiven (voir commentaire en haut de fichier).
       - key: DB_HOST
-        fromService:
-          type: pserv
-          name: qct-mysql
-          property: host
+        sync: false
       - key: DB_PORT
-        value: "3306"
+        sync: false
       - key: DB_DATABASE
-        value: findme
+        sync: false
       - key: DB_USERNAME
         sync: false
       - key: DB_PASSWORD
@@ -91,24 +103,4 @@ services:
       - key: CINETPAY_SITE_ID
         sync: false
       - key: CINETPAY_SECRET_KEY
-        sync: false
-
-  - type: pserv
-    name: qct-mysql
-    runtime: image
-    plan: starter
-    image:
-      url: docker.io/library/mysql:8
-    disk:
-      name: qct-mysql-data
-      mountPath: /var/lib/mysql
-      sizeGB: 1
-    envVars:
-      - key: MYSQL_DATABASE
-        value: findme
-      - key: MYSQL_USER
-        sync: false
-      - key: MYSQL_PASSWORD
-        sync: false
-      - key: MYSQL_ROOT_PASSWORD
         sync: false

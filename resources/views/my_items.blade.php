@@ -121,7 +121,7 @@
                                     <div class="flex items-center gap-3">
                                         @php $firstImage = explode(',', $item->images)[0] ?? null; @endphp
                                         @if($firstImage)
-                                            <img src="{{ asset($firstImage) }}" class="w-10 h-10 rounded-lg object-cover border border-slate-600 hidden sm:block" alt="">
+                                            <img src="{{ asset($firstImage) }}" class="w-10 h-10 rounded-lg object-cover border border-slate-600 hidden sm:block" alt="" onerror="imgFallback(this)">
                                         @else
                                             <div class="w-10 h-10 rounded-lg bg-slate-700 border border-slate-600 flex items-center justify-center hidden sm:flex shrink-0">
                                                 <i class="fas fa-image text-slate-500"></i>
@@ -154,9 +154,10 @@
                                     @endphp
                                     <div class="flex -space-x-2">
                                         @foreach($displayImages as $image)
-                                            <img class="h-8 w-8 rounded-full border-2 border-slate-800 object-cover" 
-                                                 src="{{ asset($image) }}" 
-                                                 alt="Photo">
+                                            <img class="h-8 w-8 rounded-full border-2 border-slate-800 object-cover"
+                                                 src="{{ asset($image) }}"
+                                                 alt="Photo"
+                                                 onerror="imgFallback(this)">
                                         @endforeach
                                         @if(count($images) > 3)
                                             <span class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-600 border-2 border-slate-800 text-xs font-medium text-slate-300">
