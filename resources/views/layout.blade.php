@@ -121,10 +121,11 @@
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[1px] text-slate-400 mb-4">Aide</p>
                     <ul class="list-none flex flex-col gap-2.5">
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Comment ça marche</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">FAQ</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Politique de confidentialité</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions d'utilisation</a></li>
+                        <li><a href="{{ url('/page/comment-ca-marche') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Comment ça marche</a></li>
+                        <li><a href="{{ url('/faq') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">FAQ</a></li>
+                        <li><a href="{{ url('/page/politique-confidentialite') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Politique de confidentialité</a></li>
+                        <li><a href="{{ url('/page/cgu') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions d'utilisation</a></li>
+                        <li><a href="{{ url('/page/cgv') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions générales de vente</a></li>
                     </ul>
                 </div>
 
