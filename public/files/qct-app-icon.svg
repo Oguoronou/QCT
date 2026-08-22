@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 160 160" role="img" aria-label="QCT">
+  <title>QCT — icone applicative</title>
+  <rect x="0" y="0" width="160" height="160" rx="40" fill="#1e293b"/>
+  <g fill="none" stroke="#ffffff" stroke-width="15" stroke-linecap="round">
+    <circle cx="75" cy="75" r="36"/>
+    <line x1="100.5" y1="100.5" x2="121" y2="121"/>
+  </g>
+</svg>

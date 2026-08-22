@@ -24,15 +24,26 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
-        $profileImage = 'user.png';
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'mobile_no' => 'required|string|max:20',
+            'country' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        ], [
+            'email.unique' => 'Cette adresse email est déjà utilisée.',
+            'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
+            'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
+            'image.image' => 'Le fichier doit être une image (JPG, PNG, GIF).',
+            'image.max' => "L'image ne doit pas dépasser 5 Mo.",
+        ]);
+
+        $profileImage = null;
         if ($imageUpload = $request->file('image')) {
             $profileImage = BlobStorage::store($imageUpload, 'uploads/profiles');
-        }
-
-        $userCheck = User::where("email", $request->email)->get();
-        if(count($userCheck) > 0){
-            Session::flash("message", "Email Already Registered!");
-            return redirect("register");
         }
 
         User::create([
@@ -46,12 +57,17 @@ class RegisterController extends Controller
             'image' => $profileImage,
         ]);
 
-        Session::flash("message", "Your Account Registered Successfully!");
+        Session::flash("message", "Votre compte a été créé avec succès !");
         return redirect("login");
     }
 
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             if(Auth::user()->role == "user"){
@@ -60,8 +76,7 @@ class RegisterController extends Controller
             return redirect("admin/dashboard");
         }
 
-        Session::flash("message", "Email ou mot de passe incorrect!");
-        return redirect()->back();
+        return back()->withErrors(['email' => 'Email ou mot de passe incorrect !'])->withInput($request->only('email'));
     }
 
     public function logout()

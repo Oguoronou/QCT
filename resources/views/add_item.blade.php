@@ -54,24 +54,6 @@
                         <p id="title-sub" class="text-slate-400 text-sm mt-1">{{ $current['titleSub'] }}</p>
                     </div>
                 </div>
-
-                @if(Session::has("message"))
-                <div class="mt-4 bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-sm p-3 rounded-lg flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
-                    {{ Session::get("message") }}
-                </div>
-                @endif
-
-                @if($errors->any())
-                <div class="mt-4 bg-red-500/15 border border-red-500/25 text-red-300 text-sm p-3 rounded-lg">
-                    @foreach ($errors->all() as $error)
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ $error }}
-                        </div>
-                    @endforeach
-                </div>
-                @endif
             </div>
 
             <div class="p-8">
@@ -136,7 +118,7 @@
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                     <i id="upload-icon" class="fas fa-cloud-upload-alt text-2xl text-slate-500 mb-3 transition-colors {{ $current['uploadIconHover'] }}"></i>
                                     <p class="text-sm text-slate-400">Cliquez pour uploader jusqu'à 5 photos</p>
-                                    <p class="text-xs text-slate-500 mt-1">JPG, PNG ou WebP (max 2 Mo par image)</p>
+                                    <p class="text-xs text-slate-500 mt-1">JPG, PNG ou WebP (max 5 Mo par image)</p>
                                 </div>
                                 <input type="file" id="images" name="images[]" class="hidden" accept="image/*" multiple required>
                             </label>
@@ -275,6 +257,7 @@
     });
 
     const MAX_IMAGES = 5;
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
     const imagesInput = document.getElementById('images');
     const previewsContainer = document.getElementById('image-previews');
     const imagesError = document.getElementById('images-error');
@@ -323,7 +306,15 @@
     }
 
     imagesInput.addEventListener('change', function (e) {
-        let combined = selectedFiles.concat(Array.from(e.target.files));
+        let incoming = Array.from(e.target.files);
+
+        const oversized = incoming.filter(f => f.size > MAX_IMAGE_SIZE);
+        if (oversized.length > 0) {
+            showToast('Image trop volumineuse (max 5 Mo) : ' + oversized.map(f => f.name).join(', '), 'error');
+            incoming = incoming.filter(f => f.size <= MAX_IMAGE_SIZE);
+        }
+
+        let combined = selectedFiles.concat(incoming);
 
         if (combined.length > MAX_IMAGES) {
             combined = combined.slice(0, MAX_IMAGES);

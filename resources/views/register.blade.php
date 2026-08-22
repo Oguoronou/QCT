@@ -22,24 +22,6 @@
                 </div>
                 <h2 class="text-2xl font-bold text-slate-50">Rejoignez la communauté</h2>
                 <p class="text-slate-400 text-sm mt-2">Créez votre compte pour commencer</p>
-                
-                @if(Session::has("message"))
-                <div class="mt-4 bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-sm p-3 rounded-lg flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
-                    {{ Session::get("message") }}
-                </div>
-                @endif
-
-                @if($errors->any())
-                <div class="mt-4 bg-red-500/15 border border-red-500/25 text-red-300 text-sm p-3 rounded-lg">
-                    @foreach ($errors->all() as $error)
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ $error }}
-                        </div>
-                    @endforeach
-                </div>
-                @endif
             </div>
             
             <!-- Formulaire -->
@@ -165,7 +147,7 @@
                             <input type="file" id="image" name="image" accept="image/*" required
                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg py-3 px-4 text-sm text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-500/15 file:text-blue-400 hover:file:bg-blue-500/25 file:cursor-pointer file:transition-colors cursor-pointer outline-none transition-all focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,.12)]">
                         </div>
-                        <p class="text-xs text-slate-500 mt-1">Format accepté : JPG, PNG. Taille max : 2 Mo</p>
+                        <p class="text-xs text-slate-500 mt-1">Format accepté : JPG, PNG. Taille max : 5 Mo</p>
                     </div>
                     
                     <!-- Conditions d'utilisation -->
@@ -228,6 +210,20 @@
 </div>
 
 <script>
+// ── Vérification côté client de la taille de la photo de profil (max 5 Mo) ──
+(function () {
+    const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+    const imageInput = document.getElementById('image');
+
+    imageInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file && file.size > MAX_IMAGE_SIZE) {
+            showToast("La photo de profil ne doit pas dépasser 5 Mo.", 'error');
+            this.value = '';
+        }
+    });
+})();
+
 function togglePassword() {
     const input = document.getElementById('password');
     const icon = document.getElementById('toggleIcon');

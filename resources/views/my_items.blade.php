@@ -26,13 +26,6 @@
                         </a>
                     </div>
                 </div>
-                
-                @if(Session::has("message"))
-                <div class="mt-4 bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-sm p-3 rounded-lg flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
-                    {{ Session::get("message") }}
-                </div>
-                @endif
             </div>
 
             <!-- Contenu -->

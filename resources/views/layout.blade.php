@@ -52,11 +52,15 @@
                     @endif
                 @else
                     <li class="relative">
-                        <button onclick="toggleDropdown(event)" 
+                        <button onclick="toggleDropdown(event)"
                                 class="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-full border border-slate-700 bg-slate-800 transition-colors hover:border-blue-500 font-sans text-slate-50">
-                            <div class="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </div>
+                            @if (Auth::user()->image)
+                                <img src="{{ asset(Auth::user()->image) }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover" onerror="imgFallback(this)">
+                            @else
+                                <div class="w-7 h-7 rounded-full bg-blue-500 flex items-center justify-center text-xs font-bold text-white">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                </div>
+                            @endif
                             <span class="text-[13px] font-semibold text-slate-50 max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap">{{ Auth::user()->name }}</span>
                             <i class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200" id="dropdownArrow"></i>
                         </button>
@@ -81,6 +85,9 @@
 
         </div>
     </nav>
+
+    <!-- ── NOTIFICATIONS (toasts) ───────────────────── -->
+    <div id="toast-container" class="fixed top-20 inset-x-4 sm:inset-x-auto sm:right-4 z-[500] flex flex-col gap-3 sm:w-[380px] pointer-events-none"></div>
 
     <!-- ── MAIN ─────────────────────────────────────── -->
     <main class="min-h-[calc(100vh-64px)]">
@@ -194,6 +201,51 @@
         // Empêcher la fermeture quand on clique dans le dropdown
         document.getElementById('userDropdown').addEventListener('click', function(event) {
             event.stopPropagation();
+        });
+
+        // ── Notifications (toasts) : succès en vert, erreurs en rouge ──
+        function showToast(message, type) {
+            const container = document.getElementById('toast-container');
+            if (!container || !message) return;
+
+            const isError = type === 'error';
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-[0_4px_24px_rgba(0,0,0,.35)] text-sm transition-opacity '
+                + (isError
+                    ? 'bg-red-500/15 border-red-500/25 text-red-300'
+                    : 'bg-emerald-500/15 border-emerald-500/25 text-emerald-300');
+
+            const icon = document.createElement('i');
+            icon.className = 'fas mt-0.5 ' + (isError ? 'fa-exclamation-circle' : 'fa-check-circle');
+
+            const text = document.createElement('span');
+            text.className = 'flex-1';
+            text.textContent = message;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.setAttribute('aria-label', 'Fermer');
+            closeBtn.className = 'shrink-0 text-current opacity-60 hover:opacity-100 transition-opacity cursor-pointer bg-transparent border-none';
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.addEventListener('click', () => toast.remove());
+
+            toast.append(icon, text, closeBtn);
+            container.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 7000);
+        }
+        window.showToast = showToast;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            @if(Session::has('message'))
+                showToast(@json(Session::get('message')), 'success');
+            @endif
+            @if(Session::has('error'))
+                showToast(@json(Session::get('error')), 'error');
+            @endif
+            @foreach($errors->all() as $error)
+                showToast(@json($error), 'error');
+            @endforeach
         });
 
         // ── Image de secours quand une photo ne charge pas ──

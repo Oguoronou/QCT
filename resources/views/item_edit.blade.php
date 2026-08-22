@@ -29,24 +29,6 @@
                         </p>
                     </div>
                 </div>
-                
-                @if(Session::has("message"))
-                <div class="mt-4 bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-sm p-3 rounded-lg flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
-                    {{ Session::get("message") }}
-                </div>
-                @endif
-
-                @if($errors->any())
-                <div class="mt-4 bg-red-500/15 border border-red-500/25 text-red-300 text-sm p-3 rounded-lg">
-                    @foreach ($errors->all() as $error)
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ $error }}
-                        </div>
-                    @endforeach
-                </div>
-                @endif
             </div>
 
             <!-- Corps du formulaire -->
@@ -124,7 +106,7 @@
                                     <p class="text-sm text-slate-400">
                                         <span class="font-semibold">Cliquez pour uploader</span> jusqu'à 5 photos
                                     </p>
-                                    <p class="text-xs text-slate-500 mt-1">PNG, JPG, WebP (max 2 Mo par image)</p>
+                                    <p class="text-xs text-slate-500 mt-1">PNG, JPG, WebP (max 5 Mo par image)</p>
                                 </div>
                                 <input type="file" id="newImages" name="images[]" class="hidden" accept="image/*" multiple>
                             </label>
@@ -193,9 +175,7 @@
                             <label for="receipt_photo" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.5px]">Photo du récépissé (optionnel)</label>
                             <input type="file" id="receipt_photo" name="receipt_photo" accept="image/*"
                                    class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600">
-                            @if($item->policeDeclaration->receipt_photo)
-                                <p class="text-xs text-slate-500 mt-1">Laissez vide pour conserver le récépissé actuel</p>
-                            @endif
+                            <p class="text-xs text-slate-500 mt-1">JPG, PNG (max 5 Mo)@if($item->policeDeclaration->receipt_photo) — laissez vide pour conserver le récépissé actuel@endif</p>
                         </div>
                     </div>
                     @endif
@@ -239,6 +219,7 @@
     // Sélection multiple des nouvelles images (miniatures + limite de 5)
     (function () {
         const MAX_IMAGES = 5;
+        const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
         const imagesInput = document.getElementById('newImages');
         const previewsContainer = document.getElementById('image-previews');
         const imagesError = document.getElementById('images-error');
@@ -287,7 +268,15 @@
         }
 
         imagesInput.addEventListener('change', function (e) {
-            let combined = selectedFiles.concat(Array.from(e.target.files));
+            let incoming = Array.from(e.target.files);
+
+            const oversized = incoming.filter(f => f.size > MAX_IMAGE_SIZE);
+            if (oversized.length > 0) {
+                showToast('Image trop volumineuse (max 5 Mo) : ' + oversized.map(f => f.name).join(', '), 'error');
+                incoming = incoming.filter(f => f.size <= MAX_IMAGE_SIZE);
+            }
+
+            let combined = selectedFiles.concat(incoming);
 
             if (combined.length > MAX_IMAGES) {
                 combined = combined.slice(0, MAX_IMAGES);
@@ -301,6 +290,17 @@
             renderPreviews();
             updateCounter();
         });
+
+        const receiptPhotoInput = document.getElementById('receipt_photo');
+        if (receiptPhotoInput) {
+            receiptPhotoInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file && file.size > MAX_IMAGE_SIZE) {
+                    showToast('Le récépissé ne doit pas dépasser 5 Mo.', 'error');
+                    this.value = '';
+                }
+            });
+        }
     })();
 
     // Modal image

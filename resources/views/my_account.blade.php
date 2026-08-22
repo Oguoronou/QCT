@@ -8,11 +8,17 @@
             <!-- En-tête avec avatar -->
             <div class="bg-slate-800 border-b border-slate-700 py-8 px-8 text-center">
                 <div class="relative inline-block mb-4">
-                    <div class="w-24 h-24 rounded-full bg-blue-500/15 border-4 border-blue-500/30 flex items-center justify-center mx-auto">
-                        <span class="text-4xl font-bold text-blue-400">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </span>
-                    </div>
+                    @if (Auth::user()->image)
+                        <img src="{{ asset(Auth::user()->image) }}" alt="{{ Auth::user()->name }}"
+                             class="w-24 h-24 rounded-full object-cover border-4 border-blue-500/30 mx-auto"
+                             onerror="imgFallback(this)">
+                    @else
+                        <div class="w-24 h-24 rounded-full bg-blue-500/15 border-4 border-blue-500/30 flex items-center justify-center mx-auto">
+                            <span class="text-4xl font-bold text-blue-400">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </span>
+                        </div>
+                    @endif
                     <div class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-emerald-500 border-4 border-slate-800 flex items-center justify-center">
                         <i class="fas fa-check text-white text-xs"></i>
                     </div>
@@ -24,26 +30,7 @@
                     {{ ucfirst(Auth::user()->role ?? 'Utilisateur') }}
                 </span>
             </div>
-            
-            <!-- Messages -->
-            @if(Session::has("message"))
-            <div class="mx-8 mt-6 bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-sm p-4 rounded-xl flex items-center gap-3">
-                <i class="fas fa-check-circle text-emerald-400"></i>
-                {{ Session::get("message") }}
-            </div>
-            @endif
 
-            @if($errors->any())
-            <div class="mx-8 mt-6 bg-red-500/15 border border-red-500/25 text-red-300 text-sm p-4 rounded-xl">
-                @foreach ($errors->all() as $error)
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-exclamation-circle"></i>
-                        {{ $error }}
-                    </div>
-                @endforeach
-            </div>
-            @endif
-            
             <!-- Corps du formulaire -->
             <div class="p-8">
                 <form action="{{ URL::to('update-profile') }}" method="post" class="space-y-6">

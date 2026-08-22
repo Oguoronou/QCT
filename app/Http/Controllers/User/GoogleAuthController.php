@@ -22,7 +22,7 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Google OAuth callback failed: ' . $e->getMessage(), ['exception' => $e]);
-            Session::flash("message", "La connexion avec Google a échoué. Veuillez réessayer.");
+            Session::flash("error", "La connexion avec Google a échoué. Veuillez réessayer.");
             return redirect("login");
         }
 

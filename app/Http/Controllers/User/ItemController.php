@@ -102,9 +102,13 @@ class ItemController extends Controller
                 'category' => 'required|string|max:255',
                 'lost_date' => 'required|date',
                 'images' => 'array|max:5',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
                 'description' => 'required|string',
                 'status' => 'required|in:lost,found',
+            ], [
+                'images.*.max' => 'Chaque image ne doit pas dépasser 5 Mo.',
+                'images.*.image' => 'Chaque fichier doit être une image (JPG, PNG, GIF).',
+                'images.max' => '5 images maximum.',
             ]);
 
             // Initialisation du tableau des chemins d'images
@@ -134,6 +138,8 @@ class ItemController extends Controller
                 : "Objet trouvé ajouté, nous cherchons le propriétaire...");
 
             return redirect("my-items");
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             // En cas d'erreur, supprimer les images déjà uploadées
             if (!empty($imagePaths)) {
@@ -226,7 +232,11 @@ class ItemController extends Controller
                 'lost_date' => 'required|date',
                 'description' => 'required|string',
                 'images' => 'array|max:5',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+            ], [
+                'images.*.max' => 'Chaque image ne doit pas dépasser 5 Mo.',
+                'images.*.image' => 'Chaque fichier doit être une image (JPG, PNG, GIF).',
+                'images.max' => '5 images maximum.',
             ]);
 
             $item = Item::findOrFail($request->id);
@@ -267,7 +277,10 @@ class ItemController extends Controller
                 $request->validate([
                     'commissariat_id' => 'required|exists:commissariats,id',
                     'declaration_number' => 'required|string|max:100',
-                    'receipt_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                    'receipt_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                ], [
+                    'receipt_photo.max' => 'Le récépissé ne doit pas dépasser 5 Mo.',
+                    'receipt_photo.image' => 'Le récépissé doit être une image (JPG, PNG).',
                 ]);
 
                 $this->upsertPoliceDeclaration($item, $request);
@@ -275,6 +288,8 @@ class ItemController extends Controller
 
             Session::flash("message", "Objet mis à jour avec succès !");
             return redirect("my-items");
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             Session::flash("error", "Une erreur est survenue lors de la mise à jour de l'objet.");
             return redirect()->back()->withInput();
@@ -295,7 +310,10 @@ class ItemController extends Controller
                 $request->validate([
                     'commissariat_id' => 'required|exists:commissariats,id',
                     'declaration_number' => 'required|string|max:100',
-                    'receipt_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                    'receipt_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                ], [
+                    'receipt_photo.max' => 'Le récépissé ne doit pas dépasser 5 Mo.',
+                    'receipt_photo.image' => 'Le récépissé doit être une image (JPG, PNG).',
                 ]);
 
                 $this->upsertPoliceDeclaration($item, $request);
@@ -305,6 +323,8 @@ class ItemController extends Controller
 
             Session::flash("message", "Objet marqué comme trouvé !");
             return redirect('my-items');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             Session::flash("error", "Une erreur est survenue lors de la mise à jour du statut.");
             return redirect()->back();

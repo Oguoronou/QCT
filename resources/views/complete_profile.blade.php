@@ -22,24 +22,6 @@
                 </div>
                 <h2 class="text-2xl font-bold text-slate-50">Complétez votre profil</h2>
                 <p class="text-slate-400 text-sm mt-2">Encore quelques informations pour finaliser votre compte</p>
-
-                @if(Session::has("message"))
-                <div class="mt-4 bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 text-sm p-3 rounded-lg flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
-                    {{ Session::get("message") }}
-                </div>
-                @endif
-
-                @if($errors->any())
-                <div class="mt-4 bg-red-500/15 border border-red-500/25 text-red-300 text-sm p-3 rounded-lg">
-                    @foreach ($errors->all() as $error)
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ $error }}
-                        </div>
-                    @endforeach
-                </div>
-                @endif
             </div>
 
             <!-- Formulaire -->

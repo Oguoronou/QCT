@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="160" viewBox="0 0 420 160" role="img" aria-label="QCT - Qui cherche trouve" color="#1e293b">
+  <title>QCT — Qui cherche trouve (monochrome)</title>
+  <rect x="4" y="4" width="152" height="152" rx="38" fill="none" stroke="currentColor" stroke-width="8"/>
+  <g fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round">
+    <circle cx="75" cy="75" r="34"/>
+    <line x1="99" y1="99" x2="118" y2="118"/>
+  </g>
+  <g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round">
+    <circle cx="231" cy="62" r="24"/>
+    <line x1="248" y1="79" x2="258" y2="89"/>
+    <path d="M323.4 46.6 A24 24 0 1 0 323.4 77.4"/>
+  </g>
+  <rect x="369" y="32" width="12" height="60" rx="6" fill="currentColor"/>
+  <rect x="351" y="32" width="48" height="12" rx="6" fill="currentColor"/>
+  <text x="201" y="126" fill="currentColor" font-family="Poppins, Montserrat, Outfit, 'Segoe UI', system-ui, sans-serif" font-size="22" font-weight="400" letter-spacing="1.5">Qui cherche trouve</text>
+</svg>

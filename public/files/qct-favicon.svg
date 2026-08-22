@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="QCT">
+  <title>QCT — favicon</title>
+  <rect x="0" y="0" width="64" height="64" rx="16" fill="#1e293b"/>
+  <g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round">
+    <circle cx="30" cy="30" r="14"/>
+    <line x1="40" y1="40" x2="48" y2="48"/>
+  </g>
+</svg>
