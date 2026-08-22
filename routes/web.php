@@ -102,6 +102,14 @@ Route::post("register", [App\Http\Controllers\User\RegisterController::class, "r
 Route::post("login", [App\Http\Controllers\User\RegisterController::class, "login"])->middleware('throttle.custom:10,1');
 Route::match(['get', 'post'], "logout", [App\Http\Controllers\User\RegisterController::class, "logout"])->name('logout');
 
+Route::get("auth/google", [App\Http\Controllers\User\GoogleAuthController::class, "redirect"])->name('google.redirect');
+Route::get("auth/google/callback", [App\Http\Controllers\User\GoogleAuthController::class, "callback"])->name('google.callback');
+
+Route::middleware('auth')->group(function () {
+    Route::get("complete-profile", [App\Http\Controllers\User\GoogleAuthController::class, "showCompleteProfile"])->name('complete-profile');
+    Route::post("complete-profile", [App\Http\Controllers\User\GoogleAuthController::class, "completeProfile"]);
+});
+
 Route::get("my-account", [App\Http\Controllers\User\ProfileController::class, "myAccount"]);
 Route::post("update-profile", [App\Http\Controllers\User\ProfileController::class, "updateProfile"]);
 
