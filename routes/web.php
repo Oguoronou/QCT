@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Item;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -37,7 +38,12 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems]);
+    $testimonials = Message::where('is_testimonial', true)
+        ->latest()
+        ->take(6)
+        ->get();
+
+    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems, "testimonials" => $testimonials]);
 });
 
 Route::get('/login', function () {
