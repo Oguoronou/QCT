@@ -104,6 +104,10 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::get("admin/settings", [App\Http\Controllers\Admin\SettingController::class, "edit"]);
     Route::post("admin/settings", [App\Http\Controllers\Admin\SettingController::class, "update"]);
 
+    Route::get("admin/pages", [App\Http\Controllers\Admin\PageController::class, "index"]);
+    Route::get("admin/pages/{slug}/edit", [App\Http\Controllers\Admin\PageController::class, "edit"]);
+    Route::post("admin/pages/{slug}", [App\Http\Controllers\Admin\PageController::class, "update"]);
+
     Route::get("admin/users", [App\Http\Controllers\Admin\UserController::class, "index"]);
 
     Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);

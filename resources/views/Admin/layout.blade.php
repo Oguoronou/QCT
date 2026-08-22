@@ -146,6 +146,49 @@
           </a>
         </li>
 
+        <!-- Content Dropdown -->
+        <li>
+          <button id="contentDropdown" class="flex items-center justify-between w-full p-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded">
+            <div class="flex items-center">
+              <i class="fas fa-file-alt w-6 text-center"></i>
+              <span class="ml-3">Contenu</span>
+            </div>
+            <i class="fas fa-chevron-down text-xs"></i>
+          </button>
+          <ul id="contentSubmenu" class="hidden py-2 space-y-1 pl-11">
+            <li>
+              <a href="{{ url('admin/pages/comment-ca-marche/edit') }}" class="flex items-center p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded text-sm">
+                <i class="fas fa-circle text-xs mr-2"></i>
+                Comment ça marche
+              </a>
+            </li>
+            <li>
+              <a href="{{ url('admin/pages/politique-confidentialite/edit') }}" class="flex items-center p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded text-sm">
+                <i class="fas fa-circle text-xs mr-2"></i>
+                Politique de confidentialité
+              </a>
+            </li>
+            <li>
+              <a href="{{ url('admin/pages/cgu/edit') }}" class="flex items-center p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded text-sm">
+                <i class="fas fa-circle text-xs mr-2"></i>
+                CGU
+              </a>
+            </li>
+            <li>
+              <a href="{{ url('admin/pages/cgv/edit') }}" class="flex items-center p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded text-sm">
+                <i class="fas fa-circle text-xs mr-2"></i>
+                CGV
+              </a>
+            </li>
+            <li>
+              <a href="{{ url('admin/faq') }}" class="flex items-center p-2 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded text-sm">
+                <i class="fas fa-circle text-xs mr-2"></i>
+                FAQ
+              </a>
+            </li>
+          </ul>
+        </li>
+
         @if(!empty(Auth::user()))
         <li class="pt-4 border-t mt-4">
           <a href="{{ url('logout') }}" class="flex items-center p-2 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded">
@@ -192,6 +235,13 @@
     // Toggle category dropdown
     document.getElementById('categoryDropdown').addEventListener('click', function() {
       document.getElementById('categorySubmenu').classList.toggle('hidden');
+      this.querySelector('i:last-child').classList.toggle('transform');
+      this.querySelector('i:last-child').classList.toggle('rotate-180');
+    });
+
+    // Toggle content dropdown
+    document.getElementById('contentDropdown').addEventListener('click', function() {
+      document.getElementById('contentSubmenu').classList.toggle('hidden');
       this.querySelector('i:last-child').classList.toggle('transform');
       this.querySelector('i:last-child').classList.toggle('rotate-180');
     });
