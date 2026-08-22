@@ -95,6 +95,9 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::post("admin/update-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "update"]);
     Route::post("admin/toggle-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "toggleActive"]);
 
+    Route::get("admin/settings", [App\Http\Controllers\Admin\SettingController::class, "edit"]);
+    Route::post("admin/settings", [App\Http\Controllers\Admin\SettingController::class, "update"]);
+
     Route::get("admin/users", [App\Http\Controllers\Admin\UserController::class, "index"]);
 
     Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
