@@ -104,6 +104,7 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::post("admin/delete-message/{id}", [App\Http\Controllers\MessageController::class, "deleteMessage"]);
     Route::post("admin/mark-as-reply/{id}", [App\Http\Controllers\MessageController::class, "replyMessage"]);
     Route::post("admin/mark-as-pending/{id}", [App\Http\Controllers\MessageController::class, "pendingMessage"]);
+    Route::post("admin/toggle-testimonial/{id}", [App\Http\Controllers\MessageController::class, "toggleTestimonial"]);
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

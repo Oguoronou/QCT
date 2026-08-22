@@ -57,4 +57,16 @@ class MessageController extends Controller
             Session::flash("message", "Message Status Updated");
             return redirect()->back();
         }
+
+        public function toggleTestimonial($id)
+        {
+            $message = Message::findOrFail($id);
+            $message->update(['is_testimonial' => !$message->is_testimonial]);
+
+            Session::flash("message", $message->is_testimonial
+                ? "Message marqué comme témoignage"
+                : "Témoignage retiré");
+
+            return redirect()->back();
+        }
 }
