@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\BlobStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -59,15 +60,9 @@ class SettingController extends Controller
         }
 
         if ($request->hasFile('site_logo')) {
-            $oldLogo = Setting::get('site_logo');
-            if ($oldLogo && file_exists(public_path($oldLogo))) {
-                unlink(public_path($oldLogo));
-            }
+            BlobStorage::delete(Setting::get('site_logo'));
 
-            $logo = $request->file('site_logo');
-            $filename = time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
-            $logo->move(public_path(self::LOGO_FOLDER), $filename);
-            Setting::set('site_logo', self::LOGO_FOLDER . '/' . $filename);
+            Setting::set('site_logo', BlobStorage::store($request->file('site_logo'), self::LOGO_FOLDER));
         }
 
         Session::flash('message', 'Paramètres mis à jour avec succès !');

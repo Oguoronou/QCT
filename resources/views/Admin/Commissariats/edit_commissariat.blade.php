@@ -80,6 +80,29 @@
                         <input type="text" id="address" name="address" value="{{ old('address', $commissariat->address) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                     </div>
+
+                    <div>
+                        <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">
+                            Latitude
+                        </label>
+                        <input type="number" step="any" min="-90" max="90" id="latitude" name="latitude" value="{{ old('latitude', $commissariat->latitude) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Ex: 5.3599">
+                    </div>
+
+                    <div>
+                        <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">
+                            Longitude
+                        </label>
+                        <input type="number" step="any" min="-180" max="180" id="longitude" name="longitude" value="{{ old('longitude', $commissariat->longitude) }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                               placeholder="Ex: -4.0083">
+                    </div>
+
+                    <p class="md:col-span-2 text-xs text-gray-500 -mt-3">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Facultatif : sans coordonnées précises, le commissariat sera placé approximativement au centre de sa commune sur la carte. Pour les obtenir, cherchez l'adresse sur Google Maps, clic droit sur le point puis copiez les coordonnées.
+                    </p>
                 </div>
 
                 <div class="flex justify-end mt-8 space-x-3">

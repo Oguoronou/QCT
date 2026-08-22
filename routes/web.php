@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Commissariat;
 use App\Models\Item;
 use App\Models\Message;
 use App\Models\User;
@@ -63,7 +64,33 @@ Route::get('/', function () {
             ->count(),
     ];
 
-    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems, "testimonials" => $testimonials, "stats" => $stats]);
+    $communeCoordinates = [
+        'Le Plateau'  => [5.3197, -4.0201],
+        'Cocody'      => [5.3599, -3.9903],
+        'Yopougon'    => [5.3450, -4.0850],
+        'Adjamé'      => [5.3667, -4.0333],
+        'Treichville' => [5.2925, -4.0083],
+        'Marcory'     => [5.2925, -3.9833],
+        'Koumassi'    => [5.2947, -3.9556],
+        'Abobo'       => [5.4194, -4.0175],
+        'Port-Bouët'  => [5.2560, -3.9270],
+        'Attécoubé'   => [5.3350, -4.0450],
+        'Bingerville' => [5.3556, -3.8908],
+        'Songon'      => [5.3167, -4.2333],
+    ];
+
+    $commissariats = Commissariat::where('is_active', true)
+        ->orderBy('commune')
+        ->get()
+        ->map(function ($c) use ($communeCoordinates) {
+            [$fallbackLat, $fallbackLng] = $communeCoordinates[$c->commune] ?? [5.3599, -4.0083];
+            $c->lat = $c->latitude ?? $fallbackLat;
+            $c->lng = $c->longitude ?? $fallbackLng;
+            $c->precise = $c->latitude !== null && $c->longitude !== null;
+            return $c;
+        });
+
+    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems, "testimonials" => $testimonials, "stats" => $stats, "commissariats" => $commissariats]);
 });
 
 Route::get('/login', function () {

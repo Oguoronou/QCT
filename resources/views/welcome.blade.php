@@ -264,34 +264,132 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-2 flex-wrap justify-center">
-            <div class="flex-1 min-w-[200px] max-w-[300px] flex flex-col gap-4 p-8 bg-slate-900 border border-slate-700 rounded-[20px]">
-                <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase">01</div>
-                <div class="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center text-xl">
-                    <i class="fas fa-edit"></i>
+        <div class="grid grid-cols-[minmax(280px,420px)_1fr] max-lg:grid-cols-1 gap-10 lg:gap-14 items-center">
+            <div class="relative rounded-[24px] overflow-hidden max-lg:order-2">
+                <img src="{{ asset('1.png') }}" alt="Objet retrouvé sur un banc" class="w-full h-[280px] lg:h-[420px] object-cover" loading="lazy" onerror="imgFallback(this)">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/15 to-transparent"></div>
+                <div class="absolute bottom-5 left-5 right-5 flex items-center gap-3 bg-slate-900/80 backdrop-blur-sm border border-slate-700 rounded-2xl p-4">
+                    <div class="w-11 h-11 shrink-0 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div>
+                        <p class="text-xl font-extrabold text-slate-50 leading-none">{{ $stats['resolved_total'] }}</p>
+                        <p class="text-xs text-slate-400 mt-1">retrouvailles réussies grâce à la communauté</p>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-slate-50">Signalez</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">Créez une annonce avec photos et description précise pour maximiser vos chances.</p>
             </div>
-            <div class="text-lg text-slate-700 px-1 max-md:hidden"><i class="fas fa-chevron-right"></i></div>
-            <div class="flex-1 min-w-[200px] max-w-[300px] flex flex-col gap-4 p-8 bg-slate-900 border border-slate-700 rounded-[20px]">
-                <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase">02</div>
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center text-xl">
-                    <i class="fas fa-users"></i>
+
+            <div class="relative flex flex-col gap-6 max-lg:order-1">
+                <div class="absolute left-6 top-4 bottom-4 w-px bg-slate-700 max-sm:hidden"></div>
+
+                <div class="relative flex gap-5 items-start">
+                    <div class="shrink-0 z-10 w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 text-blue-500 flex items-center justify-center text-xl">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <div class="pt-1.5">
+                        <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase mb-1">Étape 01</div>
+                        <h3 class="text-lg font-bold text-slate-50 mb-1">Signalez</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Créez une annonce avec photos et description précise pour maximiser vos chances.</p>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-slate-50">La communauté agit</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">Des milliers de membres reçoivent des alertes et partagent les informations.</p>
-            </div>
-            <div class="text-lg text-slate-700 px-1 max-md:hidden"><i class="fas fa-chevron-right"></i></div>
-            <div class="flex-1 min-w-[200px] max-w-[300px] flex flex-col gap-4 p-8 bg-slate-900 border border-slate-700 rounded-[20px]">
-                <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase">03</div>
-                <div class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xl">
-                    <i class="fas fa-handshake"></i>
+
+                <div class="relative flex gap-5 items-start">
+                    <div class="shrink-0 z-10 w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 text-emerald-500 flex items-center justify-center text-xl">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="pt-1.5">
+                        <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase mb-1">Étape 02</div>
+                        <h3 class="text-lg font-bold text-slate-50 mb-1">La communauté agit</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Des milliers de membres reçoivent des alertes et partagent les informations.</p>
+                    </div>
                 </div>
-                <h3 class="text-lg font-bold text-slate-50">Retrouvailles</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">Mise en contact sécurisée et vérification pour des retrouvailles en toute confiance.</p>
+
+                <div class="relative flex gap-5 items-start">
+                    <div class="shrink-0 z-10 w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 text-amber-500 flex items-center justify-center text-xl">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="pt-1.5">
+                        <div class="text-[11px] font-extrabold tracking-[2px] text-slate-400 uppercase mb-1">Étape 03</div>
+                        <h3 class="text-lg font-bold text-slate-50 mb-1">Retrouvailles</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">Mise en contact sécurisée et vérification pour des retrouvailles en toute confiance.</p>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+</section>
+
+{{-- ════════════════════════════════════════
+    COMMISSARIATS PARTENAIRES — Carte
+════════════════════════════════════════ --}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<section class="py-20 bg-slate-900" id="commissariats">
+    <div class="container mx-auto px-6">
+        <div class="flex flex-col items-center text-center gap-3 mb-12">
+            <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3"><i class="fas fa-shield-alt mr-1"></i> Réseau officiel</p>
+            <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Commissariats partenaires</h2>
+            <div class="w-10 h-[3px] bg-blue-500 rounded-sm mx-auto"></div>
+            <p class="text-base text-slate-400 leading-relaxed max-w-[560px] mx-auto">
+                Déposez ou récupérez un objet trouvé en toute sécurité auprès de nos commissariats partenaires à Abidjan.
+            </p>
+        </div>
+
+        @if ($commissariats->isEmpty())
+        <p class="text-center text-slate-400 text-sm">Aucun commissariat partenaire actif pour le moment.</p>
+        @else
+        <div class="grid grid-cols-[1fr_320px] max-lg:grid-cols-1 gap-6 items-stretch">
+            <div id="commissariatsMap" class="h-[420px] rounded-[20px] border border-slate-700 overflow-hidden z-0"></div>
+
+            <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col gap-1">
+                        <span class="text-2xl font-extrabold text-blue-500">{{ $commissariats->count() }}</span>
+                        <span class="text-xs text-slate-400">Commissariats actifs</span>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-4 flex flex-col gap-1">
+                        <span class="text-2xl font-extrabold text-emerald-500">{{ $commissariats->pluck('commune')->unique()->count() }}</span>
+                        <span class="text-xs text-slate-400">Communes couvertes</span>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="commissariatSearch" placeholder="Rechercher un commissariat, une commune…"
+                           class="w-full bg-slate-800 border border-slate-700 rounded-full py-2.5 pl-9 pr-4 text-[13px] text-slate-50 outline-none transition-colors focus:border-blue-500 placeholder:text-slate-400">
+                </div>
+
+                <div class="flex-1 flex flex-col gap-2 bg-slate-800 border border-slate-700 rounded-2xl p-3 max-h-[280px] overflow-y-auto scrollbar-none" id="commissariatsList">
+                    @foreach ($commissariats as $c)
+                    <div class="flex items-center gap-1.5">
+                        <button type="button" class="commissariat-item flex items-center gap-3 text-left flex-1 min-w-0 bg-transparent border border-transparent rounded-xl p-2.5 cursor-pointer transition-colors hover:bg-slate-900 hover:border-slate-700 font-sans" data-lat="{{ $c->lat }}" data-lng="{{ $c->lng }}" data-search="{{ mb_strtolower($c->name.' '.$c->commune) }}">
+                            <div class="w-9 h-9 shrink-0 rounded-lg bg-blue-500/15 text-blue-500 flex items-center justify-center text-sm">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[13px] font-semibold text-slate-50 truncate">{{ $c->name }}</p>
+                                <p class="text-[11px] text-slate-400 truncate">{{ $c->commune }}{{ $c->phone ? ' · '.$c->phone : '' }}</p>
+                            </div>
+                            @unless ($c->precise)
+                            <span class="shrink-0 w-1.5 h-1.5 rounded-full bg-amber-500" title="Position approximative (commune)"></span>
+                            @endunless
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination={{ $c->lat }},{{ $c->lng }}&travelmode=driving"
+                           target="_blank" rel="noopener"
+                           class="shrink-0 w-9 h-9 rounded-lg bg-slate-900 border border-slate-700 text-blue-500 flex items-center justify-center text-xs no-underline transition-colors hover:bg-blue-500/15 hover:border-blue-500"
+                           title="Itinéraire depuis ma position vers ce commissariat">
+                            <i class="fas fa-route"></i>
+                        </a>
+                    </div>
+                    @endforeach
+                    <p class="hidden text-center text-xs text-slate-400 py-4" id="commissariatNoResults">Aucun commissariat ne correspond à votre recherche.</p>
+                </div>
+
+                <a href="{{ url('add-found-item') }}" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-sm font-semibold no-underline bg-blue-500 text-white hover:bg-blue-600 transition-all">
+                    <i class="fas fa-plus"></i> Signaler une trouvaille
+                </a>
+            </div>
+        </div>
+        @endif
     </div>
 </section>
 
@@ -356,8 +454,12 @@
     TÉMOIGNAGES
 ════════════════════════════════════════ --}}
 @if ($testimonials->isNotEmpty())
-<section class="py-20 bg-[#0D1525] border-t border-slate-700">
-    <div class="container mx-auto px-6">
+<section class="relative py-20 bg-[#0D1525] border-t border-slate-700 overflow-hidden">
+    <div class="absolute -top-24 -left-24 w-[340px] h-[340px] rounded-full bg-blue-500/10 blur-[90px] pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-24 w-[340px] h-[340px] rounded-full bg-emerald-500/10 blur-[90px] pointer-events-none"></div>
+    <i class="fas fa-quote-right absolute top-10 right-[6%] text-[140px] text-slate-800/60 pointer-events-none max-md:hidden" aria-hidden="true"></i>
+
+    <div class="container relative mx-auto px-6">
         <div class="flex flex-col items-center text-center gap-3 mb-12">
             <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Témoignages</p>
             <h2 class="text-[clamp(28px,4vw,40px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Ils nous font confiance</h2>
@@ -389,8 +491,9 @@
 <section class="py-20 bg-slate-800 border-t border-slate-700">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-2 max-md:grid-cols-1 gap-[60px] items-start">
-            <div>
-                <p class="text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Soutien</p>
+            <div class="relative">
+                <i class="fas fa-heart absolute -top-6 -left-4 text-[160px] text-blue-500/[0.06] pointer-events-none max-md:hidden" aria-hidden="true"></i>
+                <p class="relative text-xs font-bold uppercase tracking-[1.5px] text-blue-500 mb-3">Soutien</p>
                 <h2 class="text-[clamp(24px,3vw,34px)] font-extrabold text-slate-50 tracking-[-1px] leading-tight">Soutenez notre mission</h2>
                 <p class="text-[15px] text-slate-400 leading-relaxed max-w-[560px]">
                     Votre don nous aide à maintenir la plateforme et à toucher plus de personnes dans le besoin.
@@ -560,7 +663,78 @@
     </div>
 </section>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+// ── Carte des commissariats partenaires
+(function() {
+    const mapEl = document.getElementById('commissariatsMap');
+    if (!mapEl || typeof L === 'undefined') return;
+
+    const escapeHtml = (str) => String(str ?? '').replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+
+    const commissariats = @json($commissariats);
+
+    const map = L.map(mapEl, { scrollWheelZoom: false }).setView([5.345, -4.02], 11);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+
+    const pinIcon = L.divIcon({
+        className: '',
+        html: '<div style="width:34px;height:34px;border-radius:50% 50% 50% 0;background:#3b82f6;border:2px solid #fff;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.4)"><i class="fas fa-shield-alt" style="transform:rotate(45deg);color:#fff;font-size:13px"></i></div>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -34]
+    });
+
+    const markers = commissariats.map((c) => {
+        const marker = L.marker([c.lat, c.lng], { icon: pinIcon }).addTo(map);
+        const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=driving`;
+        marker.bindPopup(
+            `<div style="font-family:Inter,sans-serif;min-width:170px">
+                <strong style="display:block;margin-bottom:4px">${escapeHtml(c.name)}</strong>
+                <span style="display:block;color:#64748b;font-size:12px">${escapeHtml(c.commune)}</span>
+                ${c.phone ? `<span style="display:block;font-size:12px;margin-top:4px"><i class="fas fa-phone" style="margin-right:4px"></i>${escapeHtml(c.phone)}</span>` : ''}
+                <a href="${directionsUrl}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 10px;border-radius:8px;background:#3b82f6;color:#fff;font-size:12px;font-weight:600;text-decoration:none">
+                    <i class="fas fa-route"></i> Itinéraire
+                </a>
+            </div>`
+        );
+        return marker;
+    });
+
+    const items = Array.from(document.querySelectorAll('.commissariat-item'));
+    items.forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+            const lat = parseFloat(btn.dataset.lat);
+            const lng = parseFloat(btn.dataset.lng);
+            map.setView([lat, lng], 15);
+            if (markers[i]) markers[i].openPopup();
+        });
+    });
+
+    // ── Recherche dans la liste des commissariats
+    const searchInput = document.getElementById('commissariatSearch');
+    const noResults = document.getElementById('commissariatNoResults');
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim().toLowerCase();
+            let visibleCount = 0;
+            items.forEach((btn) => {
+                const match = btn.dataset.search.includes(q);
+                btn.classList.toggle('hidden', !match);
+                if (match) visibleCount++;
+            });
+            if (noResults) noResults.classList.toggle('hidden', visibleCount > 0);
+        });
+    }
+})();
+
 // ── Category filter tabs
 document.querySelectorAll('.cat-tab').forEach(btn => {
     btn.addEventListener('click', () => {

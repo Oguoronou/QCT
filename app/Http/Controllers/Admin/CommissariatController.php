@@ -34,6 +34,8 @@ class CommissariatController extends Controller
             'city' => 'required|string|max:255',
             'phone' => 'nullable|string|max:30',
             'address' => 'nullable|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         Commissariat::create([
@@ -42,6 +44,8 @@ class CommissariatController extends Controller
             'city' => $request->city,
             'phone' => $request->phone,
             'address' => $request->address,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'is_active' => true,
         ]);
 
@@ -64,10 +68,12 @@ class CommissariatController extends Controller
             'city' => 'required|string|max:255',
             'phone' => 'nullable|string|max:30',
             'address' => 'nullable|string|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         $commissariat = Commissariat::findOrFail($id);
-        $commissariat->update($request->only(['name', 'commune', 'city', 'phone', 'address']));
+        $commissariat->update($request->only(['name', 'commune', 'city', 'phone', 'address', 'latitude', 'longitude']));
 
         Session::flash('message', 'Commissariat mis à jour avec succès !');
         return redirect('admin/commissariats');

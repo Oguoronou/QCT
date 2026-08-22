@@ -8,6 +8,7 @@ use App\Models\ItemPoliceDeclaration;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use App\Support\BlobStorage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Notifications\ItemClaimedNotification;
@@ -46,14 +47,9 @@ class ItemController extends Controller
         $declaration->declaration_number = $request->declaration_number;
 
         if ($request->hasFile('receipt_photo')) {
-            if ($declaration->receipt_photo && file_exists(public_path($declaration->receipt_photo))) {
-                unlink(public_path($declaration->receipt_photo));
-            }
+            BlobStorage::delete($declaration->receipt_photo);
 
-            $photo = $request->file('receipt_photo');
-            $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-            $photo->move(public_path(self::DECLARATION_PHOTOS_FOLDER), $filename);
-            $declaration->receipt_photo = self::DECLARATION_PHOTOS_FOLDER . '/' . $filename;
+            $declaration->receipt_photo = BlobStorage::store($request->file('receipt_photo'), self::DECLARATION_PHOTOS_FOLDER);
         }
 
         if (!$declaration->exists) {
@@ -117,14 +113,7 @@ class ItemController extends Controller
             // Traitement des images si elles existent
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    // Génération d'un nom de fichier unique
-                    $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-
-                    // Déplacement du fichier vers le dossier de stockage
-                    $image->move(public_path(self::ITEM_IMAGES_FOLDER), $filename);
-
-                    // Stockage du chemin relatif
-                    $imagePaths[] = self::ITEM_IMAGES_FOLDER . '/' . $filename;
+                    $imagePaths[] = BlobStorage::store($image, self::ITEM_IMAGES_FOLDER);
                 }
             }
 
@@ -149,9 +138,7 @@ class ItemController extends Controller
             // En cas d'erreur, supprimer les images déjà uploadées
             if (!empty($imagePaths)) {
                 foreach ($imagePaths as $image) {
-                    if (file_exists(public_path($image))) {
-                        unlink(public_path($image));
-                    }
+                    BlobStorage::delete($image);
                 }
             }
 
@@ -214,11 +201,8 @@ class ItemController extends Controller
 
             // Suppression des images associées
             if ($item->images) {
-                $images = explode(',', $item->images);
-                foreach ($images as $image) {
-                    if (file_exists(public_path($image))) {
-                        unlink(public_path($image));
-                    }
+                foreach (explode(',', $item->images) as $image) {
+                    BlobStorage::delete($image);
                 }
             }
 
@@ -261,17 +245,13 @@ class ItemController extends Controller
             if ($request->hasFile('images')) {
                 // Supprimer les anciennes images si nécessaire
                 foreach ($imagePaths as $image) {
-                    if (file_exists(public_path($image))) {
-                        unlink(public_path($image));
-                    }
+                    BlobStorage::delete($image);
                 }
 
                 // Ajouter les nouvelles images
                 $imagePaths = [];
                 foreach ($request->file('images') as $image) {
-                    $filename = time() . '_' . $image->getClientOriginalName();
-                    $image->move(public_path(self::ITEM_IMAGES_FOLDER), $filename);
-                    $imagePaths[] = self::ITEM_IMAGES_FOLDER . '/' . $filename;
+                    $imagePaths[] = BlobStorage::store($image, self::ITEM_IMAGES_FOLDER);
                 }
             }
 

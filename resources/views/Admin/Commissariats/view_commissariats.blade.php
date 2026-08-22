@@ -40,6 +40,7 @@
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commune</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ville</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Localisation</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
@@ -51,6 +52,17 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $commissariat->name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $commissariat->commune }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $commissariat->city }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($commissariat->latitude !== null && $commissariat->longitude !== null)
+                            <span class="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800" title="{{ $commissariat->latitude }}, {{ $commissariat->longitude }}">
+                                <i class="fas fa-map-marker-alt mr-1"></i> Précise
+                            </span>
+                            @else
+                            <span class="px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800" title="Coordonnées non renseignées, position approximative sur la carte">
+                                <i class="fas fa-map-marker-alt mr-1"></i> Approximative
+                            </span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 rounded-full text-xs {{ $commissariat->is_active ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-600' }}">
                                 {{ $commissariat->is_active ? 'Actif' : 'Inactif' }}
@@ -76,7 +88,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-8 text-center">
+                        <td colspan="7" class="px-6 py-8 text-center">
                             <div class="flex flex-col items-center justify-center text-gray-500">
                                 <i class="fas fa-inbox text-4xl mb-3"></i>
                                 <p class="text-lg font-medium">Aucun commissariat enregistré</p>

@@ -15,6 +15,8 @@ class Commissariat extends Model
         'city',
         'phone',
         'address',
+        'latitude',
+        'longitude',
         'is_active',
     ];
 

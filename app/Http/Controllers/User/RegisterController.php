@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\BlobStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -25,9 +26,7 @@ class RegisterController extends Controller
     {
         $profileImage = 'user.png';
         if ($imageUpload = $request->file('image')) {
-            $destinationPath = 'images/';
-            $profileImage = date('YmdHis') . "." . $imageUpload->getClientOriginalExtension();
-            $imageUpload->move($destinationPath, $profileImage);
+            $profileImage = BlobStorage::store($imageUpload, 'uploads/profiles');
         }
 
         $userCheck = User::where("email", $request->email)->get();
