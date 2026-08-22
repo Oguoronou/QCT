@@ -109,6 +109,13 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::get("admin/pages/{slug}/edit", [App\Http\Controllers\Admin\PageController::class, "edit"]);
     Route::post("admin/pages/{slug}", [App\Http\Controllers\Admin\PageController::class, "update"]);
 
+    Route::get("admin/faq", [App\Http\Controllers\Admin\FaqController::class, "index"]);
+    Route::get("admin/add-faq", [App\Http\Controllers\Admin\FaqController::class, "create"]);
+    Route::post("admin/save-faq", [App\Http\Controllers\Admin\FaqController::class, "store"]);
+    Route::get("admin/edit-faq/{id}", [App\Http\Controllers\Admin\FaqController::class, "edit"]);
+    Route::post("admin/update-faq/{id}", [App\Http\Controllers\Admin\FaqController::class, "update"]);
+    Route::post("admin/delete-faq/{id}", [App\Http\Controllers\Admin\FaqController::class, "delete"]);
+
     Route::get("admin/users", [App\Http\Controllers\Admin\UserController::class, "index"]);
 
     Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
