@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Item;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -37,7 +38,12 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems]);
+    $testimonials = Message::where('is_testimonial', true)
+        ->latest()
+        ->take(6)
+        ->get();
+
+    return view('welcome', ["items" => $items, "persons" => $persons, "resolvedItems" => $resolvedItems, "testimonials" => $testimonials]);
 });
 
 Route::get('/login', function () {
@@ -68,6 +74,8 @@ Route::post('/validate-claim/{id}', [App\Http\Controllers\User\ItemController::c
 Route::post('/claim-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'claimOwnership'])->name('claim-ownership');
 Route::post('/validate-ownership/{id}', [App\Http\Controllers\User\ItemController::class, 'validateOwnership'])->name('validate-ownership');
 Route::post("contact-us", [App\Http\Controllers\MessageController::class, "message"])->middleware('throttle.custom:10,1');
+Route::get('/page/{slug}', [App\Http\Controllers\PageController::class, 'show']);
+Route::get('/faq', [App\Http\Controllers\PageController::class, 'faq']);
 
 
 Route::middleware(['AdminLogin'])->group(function () {
@@ -95,12 +103,27 @@ Route::middleware(['AdminLogin'])->group(function () {
     Route::post("admin/update-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "update"]);
     Route::post("admin/toggle-commissariat/{id}", [App\Http\Controllers\Admin\CommissariatController::class, "toggleActive"]);
 
+    Route::get("admin/settings", [App\Http\Controllers\Admin\SettingController::class, "edit"]);
+    Route::post("admin/settings", [App\Http\Controllers\Admin\SettingController::class, "update"]);
+
+    Route::get("admin/pages", [App\Http\Controllers\Admin\PageController::class, "index"]);
+    Route::get("admin/pages/{slug}/edit", [App\Http\Controllers\Admin\PageController::class, "edit"]);
+    Route::post("admin/pages/{slug}", [App\Http\Controllers\Admin\PageController::class, "update"]);
+
+    Route::get("admin/faq", [App\Http\Controllers\Admin\FaqController::class, "index"]);
+    Route::get("admin/add-faq", [App\Http\Controllers\Admin\FaqController::class, "create"]);
+    Route::post("admin/save-faq", [App\Http\Controllers\Admin\FaqController::class, "store"]);
+    Route::get("admin/edit-faq/{id}", [App\Http\Controllers\Admin\FaqController::class, "edit"]);
+    Route::post("admin/update-faq/{id}", [App\Http\Controllers\Admin\FaqController::class, "update"]);
+    Route::post("admin/delete-faq/{id}", [App\Http\Controllers\Admin\FaqController::class, "delete"]);
+
     Route::get("admin/users", [App\Http\Controllers\Admin\UserController::class, "index"]);
 
     Route::get("admin/messages", [App\Http\Controllers\MessageController::class, "adminMessages"]);
     Route::post("admin/delete-message/{id}", [App\Http\Controllers\MessageController::class, "deleteMessage"]);
     Route::post("admin/mark-as-reply/{id}", [App\Http\Controllers\MessageController::class, "replyMessage"]);
     Route::post("admin/mark-as-pending/{id}", [App\Http\Controllers\MessageController::class, "pendingMessage"]);
+    Route::post("admin/toggle-testimonial/{id}", [App\Http\Controllers\MessageController::class, "toggleTestimonial"]);
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

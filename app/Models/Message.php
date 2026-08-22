@@ -12,12 +12,17 @@ class Message extends Model
     protected $table = "messages";
 
     protected $fillable = [
-      
+
           'name',
           'email',
           'message',
           'status',
+          'is_testimonial',
 
+    ];
+
+    protected $casts = [
+        'is_testimonial' => 'boolean',
     ];
 
 }

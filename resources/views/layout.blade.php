@@ -21,10 +21,14 @@
 
             <!-- Logo -->
             <a class="flex items-center gap-2.5 no-underline shrink-0" href="{{ url('/') }}">
-                <div class="w-9 h-9 bg-blue-500 rounded-[10px] flex items-center justify-center text-base text-white">
-                    <i class="fas fa-search-location"></i>
-                </div>
-                <span class="text-xl font-extrabold text-white tracking-[-0.5px]">Q<span class="text-blue-500">CT</span></span>
+                @if (\App\Models\Setting::get('site_logo'))
+                    <img src="{{ asset(\App\Models\Setting::get('site_logo')) }}" alt="{{ \App\Models\Setting::get('site_name', 'QCT') }}" class="w-9 h-9 rounded-[10px] object-cover">
+                @else
+                    <div class="w-9 h-9 bg-blue-500 rounded-[10px] flex items-center justify-center text-base text-white">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                @endif
+                <span class="text-xl font-extrabold text-white tracking-[-0.5px]">{{ \App\Models\Setting::get('site_name', 'QCT') }}</span>
             </a>
 
             <!-- Search (desktop) -->
@@ -90,13 +94,17 @@
 
                 <div>
                     <a class="flex items-center gap-2.5 no-underline shrink-0 mb-0" href="{{ url('/') }}">
-                        <div class="w-9 h-9 bg-blue-500 rounded-[10px] flex items-center justify-center text-base text-white">
-                            <i class="fas fa-search-location"></i>
-                        </div>
-                        <span class="text-xl font-extrabold text-white tracking-[-0.5px]">Q<span class="text-blue-500">CT</span></span>
+                        @if (\App\Models\Setting::get('site_logo'))
+                            <img src="{{ asset(\App\Models\Setting::get('site_logo')) }}" alt="{{ \App\Models\Setting::get('site_name', 'QCT') }}" class="w-9 h-9 rounded-[10px] object-cover">
+                        @else
+                            <div class="w-9 h-9 bg-blue-500 rounded-[10px] flex items-center justify-center text-base text-white">
+                                <i class="fas fa-search-location"></i>
+                            </div>
+                        @endif
+                        <span class="text-xl font-extrabold text-white tracking-[-0.5px]">{{ \App\Models\Setting::get('site_name', 'QCT') }}</span>
                     </a>
                     <p class="text-sm text-slate-400 leading-relaxed mt-3 max-w-[280px]">
-                        La plateforme communautaire qui connecte objets perdus et propriétaires, et aide à retrouver les personnes disparues en Côte d'Ivoire.
+                        {{ \App\Models\Setting::get('site_description', "La plateforme communautaire qui connecte objets perdus et propriétaires, et aide à retrouver les personnes disparues en Côte d'Ivoire.") }}
                     </p>
                 </div>
 
@@ -113,19 +121,29 @@
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[1px] text-slate-400 mb-4">Aide</p>
                     <ul class="list-none flex flex-col gap-2.5">
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Comment ça marche</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">FAQ</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Politique de confidentialité</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions d'utilisation</a></li>
+                        <li><a href="{{ url('/page/comment-ca-marche') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Comment ça marche</a></li>
+                        <li><a href="{{ url('/faq') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">FAQ</a></li>
+                        <li><a href="{{ url('/page/politique-confidentialite') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Politique de confidentialité</a></li>
+                        <li><a href="{{ url('/page/cgu') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions d'utilisation</a></li>
+                        <li><a href="{{ url('/page/cgv') }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50">Conditions générales de vente</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[1px] text-slate-400 mb-4">Contact</p>
                     <ul class="list-none flex flex-col gap-2.5">
-                        <li><a href="mailto:contact@qct.ci" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-envelope mr-1"></i> contact@qct.ci</a></li>
-                        <li><a href="tel:+2250700000000" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-phone mr-1"></i> +225 07 00 00 00 00</a></li>
-                        <li><a href="#" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-map-marker-alt mr-1"></i> Plateau, Abidjan</a></li>
+                        @php $contactEmail = \App\Models\Setting::get('contact_email', 'contact@qct.ci'); @endphp
+                        @if($contactEmail)
+                        <li><a href="mailto:{{ $contactEmail }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-envelope mr-1"></i> {{ $contactEmail }}</a></li>
+                        @endif
+                        @php $contactPhone = \App\Models\Setting::get('contact_phone', '+225 07 00 00 00 00'); @endphp
+                        @if($contactPhone)
+                        <li><a href="tel:{{ $contactPhone }}" class="text-slate-400 no-underline text-sm transition-colors hover:text-slate-50"><i class="fas fa-phone mr-1"></i> {{ $contactPhone }}</a></li>
+                        @endif
+                        @php $contactAddress = \App\Models\Setting::get('contact_address', 'Plateau, Abidjan'); @endphp
+                        @if($contactAddress)
+                        <li><span class="text-slate-400 text-sm"><i class="fas fa-map-marker-alt mr-1"></i> {{ $contactAddress }}</span></li>
+                        @endif
                     </ul>
                 </div>
 
@@ -134,10 +152,18 @@
             <div class="border-t border-slate-700 pt-6 flex items-center justify-between flex-wrap gap-3">
                 <p class="text-[13px] text-slate-400">&copy; {{ date('Y') }} QCT — Tous droits réservés.</p>
                 <div class="flex gap-2">
-                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-whatsapp"></i></a>
+                    @if (\App\Models\Setting::get('social_facebook'))
+                    <a href="{{ \App\Models\Setting::get('social_facebook') }}" target="_blank" rel="noopener" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-facebook-f"></i></a>
+                    @endif
+                    @if (\App\Models\Setting::get('social_twitter'))
+                    <a href="{{ \App\Models\Setting::get('social_twitter') }}" target="_blank" rel="noopener" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-twitter"></i></a>
+                    @endif
+                    @if (\App\Models\Setting::get('social_instagram'))
+                    <a href="{{ \App\Models\Setting::get('social_instagram') }}" target="_blank" rel="noopener" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-instagram"></i></a>
+                    @endif
+                    @if (\App\Models\Setting::get('social_whatsapp'))
+                    <a href="{{ \App\Models\Setting::get('social_whatsapp') }}" target="_blank" rel="noopener" class="w-[34px] h-[34px] rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 text-[13px] no-underline transition-all hover:text-blue-500 hover:border-blue-500"><i class="fab fa-whatsapp"></i></a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -169,6 +195,18 @@
         document.getElementById('userDropdown').addEventListener('click', function(event) {
             event.stopPropagation();
         });
+
+        // ── Image de secours quand une photo ne charge pas ──
+        function imgFallback(img) {
+            img.onerror = null;
+            const fallback = document.createElement('div');
+            fallback.className = img.className + ' flex items-center justify-center bg-slate-800 text-slate-500';
+            img.replaceWith(fallback);
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-image';
+            fallback.appendChild(icon);
+            icon.style.fontSize = Math.max(12, Math.min(fallback.offsetWidth, fallback.offsetHeight) * 0.35) + 'px';
+        }
 
         // ── Gestion du menu mobile ──
         function toggleMobileMenu() {

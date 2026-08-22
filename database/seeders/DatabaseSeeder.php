@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             CommissariatSeeder::class,
             UserSeeder::class,
             ItemSeeder::class,
+            PageSeeder::class,
+            FaqItemSeeder::class,
         ]);
     }
 }

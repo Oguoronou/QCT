@@ -122,14 +122,15 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
             @foreach ($persons as $key => $person)
                 @if ($key < 6)
                 <a href="{{ url('item-detail', $person->id) }}" class="bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden no-underline flex flex-col transition-all hover:border-red-500 hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(239,68,68,.12)]">
-                    <div class="relative h-[220px] overflow-hidden">
+                    <div class="relative h-[130px] sm:h-[220px] overflow-hidden">
                         <img src="{{ asset(explode(',', $person->images)[0]) }}"
                              alt="{{ $person->item_name }}"
                              loading="lazy"
+                             onerror="imgFallback(this)"
                              class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.04]">
                         <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {{ $person->status == 'lost' ? 'bg-red-500/15 text-red-300 border border-red-500/25' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' }}">
                             <i class="fas fa-{{ $person->status == 'lost' ? 'search' : 'check' }}"></i>
@@ -139,10 +140,10 @@
                         <div class="absolute bottom-3 left-3 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_0_0_rgba(239,68,68,.5)]"></div>
                         @endif
                     </div>
-                    <div class="p-[18px] flex-1 flex flex-col gap-2">
-                        <h3 class="text-base font-bold text-slate-50">{{ $person->item_name }}</h3>
-                        <p class="text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($person->description, 90) }}</p>
-                        <div class="flex items-center justify-between text-xs text-slate-400 mt-1">
+                    <div class="p-2.5 sm:p-[18px] flex-1 flex flex-col gap-1.5 sm:gap-2">
+                        <h3 class="text-sm sm:text-base font-bold text-slate-50">{{ $person->item_name }}</h3>
+                        <p class="text-[11px] sm:text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($person->description, 90) }}</p>
+                        <div class="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mt-1">
                             <span><i class="fas fa-clock mr-1"></i>{{ $person->created_at->diffForHumans(['locale' => 'fr']) }}</span>
                             <span class="text-blue-500 font-semibold">Voir <i class="fas fa-arrow-right"></i></span>
                         </div>
@@ -186,28 +187,29 @@
             <button class="cat-tab inline-flex items-center gap-1.5 px-[18px] py-2 rounded-full text-[13px] font-medium bg-slate-800 border border-slate-700 text-slate-400 cursor-pointer whitespace-nowrap transition-all font-sans hover:bg-blue-500 hover:border-blue-500 hover:text-white" data-cat="animal"><i class="fas fa-paw mr-1"></i> Animaux</button>
         </div>
 
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5" id="itemsGrid">
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" id="itemsGrid">
             @foreach ($items as $item)
             <a href="{{ url('item-detail', $item->id) }}"
                class="item-card bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden no-underline flex flex-col transition-all hover:border-blue-500 hover:-translate-y-[3px] hover:shadow-[0_12px_32px_rgba(59,130,246,.15)]"
                data-cat="{{ $item->category }}">
-                <div class="relative h-[200px] overflow-hidden">
+                <div class="relative h-[120px] sm:h-[200px] overflow-hidden">
                     <img src="{{ asset(explode(',', $item->images)[0]) }}"
                          alt="{{ $item->item_name }}"
                          loading="lazy"
+                         onerror="imgFallback(this)"
                          class="w-full h-full object-cover transition-transform duration-400 hover:scale-[1.04]">
                     <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold {{ $item->status == 'lost' ? 'bg-red-500/15 text-red-300 border border-red-500/25' : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25' }}">
                         {{ $item->status == 'lost' ? 'Perdu' : 'Trouvé' }}
                     </span>
                 </div>
-                <div class="p-4 flex-1 flex flex-col gap-1.5">
-                    <div class="text-[11px] font-semibold uppercase tracking-[1px] text-blue-500 flex items-center gap-1.5">
+                <div class="p-2.5 sm:p-4 flex-1 flex flex-col gap-1 sm:gap-1.5">
+                    <div class="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[1px] text-blue-500 flex items-center gap-1.5">
                         <i class="fas fa-{{ $item->category == 'documents' ? 'file-alt' : ($item->category == 'electronics' ? 'mobile-alt' : ($item->category == 'keys' ? 'key' : 'box')) }}"></i>
                         {{ ucfirst($item->category) }}
                     </div>
-                    <h3 class="text-[15px] font-bold text-slate-50">{{ $item->item_name }}</h3>
-                    <p class="text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($item->description, 80) }}</p>
-                    <div class="flex items-center justify-between text-xs text-slate-400 mt-1.5">
+                    <h3 class="text-[13px] sm:text-[15px] font-bold text-slate-50">{{ $item->item_name }}</h3>
+                    <p class="text-[11px] sm:text-[13px] text-slate-400 leading-relaxed flex-1">{{ Str::limit($item->description, 80) }}</p>
+                    <div class="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-1.5">
                         <span><i class="fas fa-clock mr-1"></i>{{ $item->created_at->diffForHumans(['locale' => 'fr']) }}</span>
                         <span class="text-blue-500 font-semibold">Voir <i class="fas fa-arrow-right"></i></span>
                     </div>
@@ -282,14 +284,15 @@
             </div>
         </div>
 
-        <div class="overflow-hidden rounded-[20px]">
-            <div class="flex gap-5 transition-transform duration-400 ease-in-out" id="carTrack">
+        <div class="overflow-x-auto scrollbar-none snap-x snap-mandatory rounded-[20px]">
+            <div class="flex gap-5" id="carTrack">
                 @foreach($resolvedItems as $item)
-                <div class="min-w-[calc(33.333%-14px)] lg:min-w-[calc(50%-10px)] sm:min-w-[100%] bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden shrink-0">
+                <div class="success-card snap-start min-w-full sm:min-w-[calc(50%-10px)] lg:min-w-[calc(33.333%-14px)] bg-slate-800 border border-slate-700 rounded-[20px] overflow-hidden shrink-0">
                     <div class="relative h-[180px] overflow-hidden">
                         <img src="{{ asset(explode(',', $item->images)[0]) }}"
                              alt="{{ $item->item_name }}"
                              loading="lazy"
+                             onerror="imgFallback(this)"
                              class="w-full h-full object-cover">
                         <span class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">
                             <i class="fas fa-check"></i> Retrouvé
@@ -322,6 +325,7 @@
 {{-- ════════════════════════════════════════
     TÉMOIGNAGES
 ════════════════════════════════════════ --}}
+@if ($testimonials->isNotEmpty())
 <section class="py-20 bg-[#0D1525] border-t border-slate-700">
     <div class="container mx-auto px-6">
         <div class="flex flex-col items-center text-center gap-3 mb-12">
@@ -331,26 +335,15 @@
         </div>
 
         <div class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-5">
-            @php
-            $testis = [
-                ['name'=>'Jean Koffi','city'=>'Abidjan','text'=>'Grâce à QCT, j\'ai retrouvé mon portefeuille avec tous mes documents en moins de 48h. Une plateforme incroyable !','stars'=>5],
-                ['name'=>'Amina Traoré','city'=>'Bouaké','text'=>'Mon téléphone perdu dans un taxi a été retrouvé grâce à la communauté QCT. Merci infiniment !','stars'=>5],
-                ['name'=>'Marc Kouadio','city'=>'Yamoussoukro','text'=>'J\'ai pu retrouver mon chien perdu grâce aux alertes QCT. La rapidité de la communauté est impressionnante.','stars'=>5],
-            ];
-            @endphp
-            @foreach($testis as $t)
+            @foreach($testimonials as $testimonial)
             <div class="bg-slate-800 border border-slate-700 rounded-[20px] p-7 flex flex-col gap-4 transition-colors hover:border-blue-500">
-                <div class="text-amber-500 text-sm flex gap-[3px]">
-                    @for($i=0;$i<$t['stars'];$i++)<i class="fas fa-star"></i>@endfor
-                </div>
-                <p class="text-sm text-slate-400 leading-relaxed flex-1 italic">"{{ $t['text'] }}"</p>
+                <p class="text-sm text-slate-400 leading-relaxed flex-1 italic">"{{ Str::limit($testimonial->message, 200) }}"</p>
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-700">
                     <div class="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-sm font-bold text-white shrink-0">
-                        {{ strtoupper(substr($t['name'],0,1)) }}
+                        {{ strtoupper(substr($testimonial->name, 0, 1)) }}
                     </div>
                     <div>
-                        <p class="font-bold text-sm">{{ $t['name'] }}</p>
-                        <p class="text-xs text-slate-400">{{ $t['city'] }}</p>
+                        <p class="font-bold text-sm">{{ $testimonial->name }}</p>
                     </div>
                 </div>
             </div>
@@ -358,6 +351,7 @@
         </div>
     </div>
 </section>
+@endif
 
 {{-- ════════════════════════════════════════
     DON — CinetPay
@@ -560,31 +554,27 @@ document.querySelectorAll('.cat-tab').forEach(btn => {
     const nextBtn = document.getElementById('carNext');
     if (!track) return;
 
-    let idx = 0;
-
-    function visibleCount() {
-        return window.innerWidth < 640 ? 1 : window.innerWidth < 1024 ? 2 : 3;
-    }
-
     function getCardWidth() {
         const card = track.querySelector('.success-card');
-        return card ? card.offsetWidth + 20 : 0;
+        return card ? card.offsetWidth + 20 : track.clientWidth;
     }
 
-    function update() {
-        const max = track.querySelectorAll('.success-card').length - visibleCount();
-        idx = Math.max(0, Math.min(idx, max));
-        track.style.transform = `translateX(-${idx * getCardWidth()}px)`;
+    function scrollByCard(direction) {
+        track.scrollBy({ left: direction * getCardWidth(), behavior: 'smooth' });
     }
 
-    nextBtn.addEventListener('click', () => { idx++; update(); });
-    prevBtn.addEventListener('click', () => { idx--; update(); });
-    window.addEventListener('resize', () => update());
+    function autoAdvance() {
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 5;
+        track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + getCardWidth(), behavior: 'smooth' });
+    }
 
-    let autoplay = setInterval(() => { idx++; update(); }, 5000);
+    nextBtn.addEventListener('click', () => scrollByCard(1));
+    prevBtn.addEventListener('click', () => scrollByCard(-1));
+
+    let autoplay = setInterval(autoAdvance, 5000);
     track.addEventListener('mouseenter', () => clearInterval(autoplay));
     track.addEventListener('mouseleave', () => {
-        autoplay = setInterval(() => { idx++; update(); }, 5000);
+        autoplay = setInterval(autoAdvance, 5000);
     });
 })();
 
